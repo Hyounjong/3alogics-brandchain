@@ -1,0 +1,43 @@
+<!––
+/*
+# Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License").
+# You may not use this file except in compliance with the License.
+# A copy of the License is located at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# or in the "license" file accompanying this file. This file is distributed
+# on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied. See the License for the specific language governing
+# permissions and limitations under the License.
+#
+*/
+––>
+<section class="cd-horizontal-blockchain border-bottom shadow-sm bg-white pt-3" [ngClass]="{'loaded': loaded}">
+  <div class="blockchain">
+    <ul class="cd-blockchain-navigation">
+      <li>
+        <a href="#" (click)="onBlocksScrollChange($event, false)" class="prev" [ngClass]="{'inactive':prevLinkInactive}"></a>
+      </li>
+      <li>
+        <a href="#" (click)="onBlocksScrollChange($event, true)" class="next" [ngClass]="{'inactive':nextLinkInactive}"></a>
+      </li>
+    </ul>
+    <div class="events-wrapper">
+      <h6 class="text-center text-orange">Blockchain Events</h6>
+      <div class="events" #eventsWrapper [style.width.px]="eventsWrapperWidth">
+        <ol>
+          <li *ngFor="let item of blockElements; let index = index;">
+            <a #blockEvents [ngClass]="{'selected': item.selected, 'older-event': index < selectedIndex}">
+              <img [ngClass]="{'selected': item.selected, 'older-event': index < selectedIndex}" data-toggle="tooltip"
+                data-html="true" [title]="getTransections(item)" src="/assets/images/block-dark.png"> </a> <span class="text-center">Block:
+              {{item.caption}}</span>
+          </li>
+        </ol>
+        <span class="filling-line" aria-hidden="true" #connectBlocks></span>
+      </div>
+    </div>
+  </div>
+</section>
