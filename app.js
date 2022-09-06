@@ -259,7 +259,7 @@ app.get('/product/:serialnumber', awaitHandler(async (req, res) => {
 }));
 
 // POST Product
-app.post('/product', awaitHandler(async (req, res) => {
+app.post('/products', awaitHandler(async (req, res) => {
 	logger.info('================ POST on Product');
 	var args = req.body;
 	var fcn = "createProduct";
@@ -318,7 +318,7 @@ app.get('/provider/:serialnumber', awaitHandler(async (req, res) => {
 }));
 
 // POST Provider
-app.post('/provider', awaitHandler(async (req, res) => {
+app.post('/providers', awaitHandler(async (req, res) => {
 	logger.info('================ POST on Provider');
 	var args = req.body;
 	var fcn = "createProvider";
@@ -377,7 +377,7 @@ app.get('/owner/:serialnumber', awaitHandler(async (req, res) => {
 }));
 
 // POST Owner
-app.post('/owner', awaitHandler(async (req, res) => {
+app.post('/owners', awaitHandler(async (req, res) => {
 	logger.info('================ POST on Owner');
 	var args = req.body;
 	var fcn = "createOwner";
