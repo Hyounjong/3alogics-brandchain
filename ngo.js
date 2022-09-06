@@ -543,7 +543,7 @@ let Chaincode = class {
     // args is passed as a JSON string
     let json = JSON.parse(args);
     let key = 'product' + json['serialnumber'];
-//    json['docType'] = 'product';
+    json['docType'] = 'product';
 
     console.log('##### createProduct payload: ' + JSON.stringify(json));
 
@@ -616,7 +616,7 @@ let Chaincode = class {
     // args is passed as a JSON string
     let json = JSON.parse(args);
     let key = 'provider' + json['serialnumber'];
-//    json['docType'] = 'provider';
+    json['docType'] = 'provider';
 
     console.log('##### createProvider payload: ' + JSON.stringify(json));
 
