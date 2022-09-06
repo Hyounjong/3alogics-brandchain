@@ -448,76 +448,6 @@ let Chaincode = class {
 
   /************************************************************************************************
    * 
-   * Donor functions 
-   * 
-   ************************************************************************************************/
-
-   /**
-   * Creates a new donor
-   * 
-   * @param {*} stub 
-   * @param {*} args - JSON as follows:
-   * {
-   *    "donorUserName":"edge",
-   *    "email":"edge@abc.com",
-   *    "registeredDate":"2018-10-22T11:52:20.182Z"
-   * }
-   */
-  async createDonor(stub, args) {
-    console.log('============= START : createDonor ===========');
-    console.log('##### createDonor arguments: ' + JSON.stringify(args));
-
-    // args is passed as a JSON string
-    let json = JSON.parse(args);
-    let key = 'donor' + json['donorUserName'];
-    json['docType'] = 'donor';
-
-    console.log('##### createDonor payload: ' + JSON.stringify(json));
-
-    // Check if the donor already exists
-    let donorQuery = await stub.getState(key);
-    if (donorQuery.toString()) {
-      throw new Error('##### createDonor - This donor already exists: ' + json['donorUserName']);
-    }
-
-    await stub.putState(key, Buffer.from(JSON.stringify(json)));
-    console.log('============= END : createDonor ===========');
-  }
-
-  /**
-   * Retrieves a specfic donor
-   * 
-   * @param {*} stub 
-   * @param {*} args 
-   */
-  async queryDonor(stub, args) {
-    console.log('============= START : queryDonor ===========');
-    console.log('##### queryDonor arguments: ' + JSON.stringify(args));
-
-    // args is passed as a JSON string
-    let json = JSON.parse(args);
-    let key = 'donor' + json['donorUserName'];
-    console.log('##### queryDonor key: ' + key);
-
-    return queryByKey(stub, key);
-  }
-
-  /**
-   * Retrieves all donors
-   * 
-   * @param {*} stub 
-   * @param {*} args 
-   */
-  async queryAllDonors(stub, args) {
-    console.log('============= START : queryAllDonors ===========');
-    console.log('##### queryAllDonors arguments: ' + JSON.stringify(args));
- 
-    let queryString = '{"selector": {"docType": "donor"}}';
-    return queryByString(stub, queryString);
-  }
-
-  /************************************************************************************************
-   * 
    * Product functions 
    * 
    ************************************************************************************************/
@@ -528,7 +458,7 @@ let Chaincode = class {
    * @param {*} stub 
    * @param {*} args - JSON as follows:
    * {
-   *    "serialnumber": "1234", 
+   *    "serialnumber": "e1bdf5dfacd4a6ca21abc8543e6ba43efa37c556d012b6cad0be466234affdba", 
    *    "manufacturer": "GUCCI Factory",
    *    "brand": "GUCCI",
    *    "model": "05T1182Z",
@@ -601,7 +531,7 @@ let Chaincode = class {
    * @param {*} stub 
    * @param {*} args - JSON as follows:
    * {
-   *    "serialnumber": "1234", 
+   *    "serialnumber": "e1bdf5dfacd4a6ca21abc8543e6ba43efa37c556d012b6cad0be466234affdba", 
    *    "providerType": "1",
    *    "worker": "Micheal",
    *    "company": "GUCCI Factory",
@@ -674,7 +604,7 @@ let Chaincode = class {
    * @param {*} stub 
    * @param {*} args - JSON as follows:
    * {
-   *    "serialnumber": "1234", 
+   *    "serialnumber": "e1bdf5dfacd4a6ca21abc8543e6ba43efa37c556d012b6cad0be466234affdba", 
    *    "ownerType": "1",
    *    "name": "James",
    *    "email": "james@gmail.com",
@@ -734,6 +664,516 @@ let Chaincode = class {
  
     let queryString = '{"selector": {"docType": "owner"}}';
     return queryByString(stub, queryString);
+  }
+
+  /************************************************************************************************
+   * 
+   * Donor functions 
+   * 
+   ************************************************************************************************/
+
+   /**
+   * Creates a new donor
+   * 
+   * @param {*} stub 
+   * @param {*} args - JSON as follows:
+   * {
+   *    "donorUserName":"edge",
+   *    "email":"edge@abc.com",
+   *    "registeredDate":"2018-10-22T11:52:20.182Z"
+   * }
+   */
+  async createDonor(stub, args) {
+    console.log('============= START : createDonor ===========');
+    console.log('##### createDonor arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+    let key = 'donor' + json['donorUserName'];
+    json['docType'] = 'donor';
+
+    console.log('##### createDonor payload: ' + JSON.stringify(json));
+
+    // Check if the donor already exists
+    let donorQuery = await stub.getState(key);
+    if (donorQuery.toString()) {
+      throw new Error('##### createDonor - This donor already exists: ' + json['donorUserName']);
+    }
+
+    await stub.putState(key, Buffer.from(JSON.stringify(json)));
+    console.log('============= END : createDonor ===========');
+  }
+
+  /**
+   * Retrieves a specfic donor
+   * 
+   * @param {*} stub 
+   * @param {*} args 
+   */
+  async queryDonor(stub, args) {
+    console.log('============= START : queryDonor ===========');
+    console.log('##### queryDonor arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+    let key = 'donor' + json['donorUserName'];
+    console.log('##### queryDonor key: ' + key);
+
+    return queryByKey(stub, key);
+  }
+
+  /**
+   * Retrieves all donors
+   * 
+   * @param {*} stub 
+   * @param {*} args 
+   */
+  async queryAllDonors(stub, args) {
+    console.log('============= START : queryAllDonors ===========');
+    console.log('##### queryAllDonors arguments: ' + JSON.stringify(args));
+ 
+    let queryString = '{"selector": {"docType": "donor"}}';
+    return queryByString(stub, queryString);
+  }
+
+  /************************************************************************************************
+   * 
+   * NGO functions 
+   * 
+   ************************************************************************************************/
+
+  /**
+   * Creates a new NGO
+   * 
+   * @param {*} stub 
+   * @param {*} args - JSON as follows:
+   * {
+   *    "ngoRegistrationNumber":"6322",
+   *    "ngoName":"Pets In Need",
+   *    "ngoDescription":"We help pets in need",
+   *    "address":"1 Pet street",
+   *    "contactNumber":"82372837",
+   *    "contactEmail":"pets@petco.com"
+   * }
+   */
+  async createNGO(stub, args) {
+    console.log('============= START : createNGO ===========');
+    console.log('##### createNGO arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+    let key = 'ngo' + json['ngoRegistrationNumber'];
+    json['docType'] = 'ngo';
+
+    console.log('##### createNGO payload: ' + JSON.stringify(json));
+
+    // Check if the NGO already exists
+    let ngoQuery = await stub.getState(key);
+    if (ngoQuery.toString()) {
+      throw new Error('##### createNGO - This NGO already exists: ' + json['ngoRegistrationNumber']);
+    }
+
+    await stub.putState(key, Buffer.from(JSON.stringify(json)));
+    console.log('============= END : createNGO ===========');
+  }
+
+  /**
+   * Retrieves a specfic ngo
+   * 
+   * @param {*} stub 
+   * @param {*} args 
+   */
+  async queryNGO(stub, args) {
+    console.log('============= START : queryNGO ===========');
+    console.log('##### queryNGO arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+    let key = 'ngo' + json['ngoRegistrationNumber'];
+    console.log('##### queryNGO key: ' + key);
+
+    return queryByKey(stub, key);
+  }
+
+  /**
+   * Retrieves all ngos
+   * 
+   * @param {*} stub 
+   * @param {*} args 
+   */
+  async queryAllNGOs(stub, args) {
+    console.log('============= START : queryAllNGOs ===========');
+    console.log('##### queryAllNGOs arguments: ' + JSON.stringify(args));
+ 
+    let queryString = '{"selector": {"docType": "ngo"}}';
+    return queryByString(stub, queryString);
+  }
+
+  /************************************************************************************************
+   * 
+   * Donation functions 
+   * 
+   ************************************************************************************************/
+
+  /**
+   * Creates a new Donation
+   * 
+   * @param {*} stub 
+   * @param {*} args - JSON as follows:
+   * {
+   *    "donationId":"2211",
+   *    "donationAmount":100,
+   *    "donationDate":"2018-09-20T12:41:59.582Z",
+   *    "donorUserName":"edge",
+   *    "ngoRegistrationNumber":"6322"
+   * }
+   */
+  async createDonation(stub, args) {
+    console.log('============= START : createDonation ===========');
+    console.log('##### createDonation arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+    let key = 'donation' + json['donationId'];
+    json['docType'] = 'donation';
+
+    console.log('##### createDonation donation: ' + JSON.stringify(json));
+
+    // Confirm the NGO exists
+    let ngoKey = 'ngo' + json['ngoRegistrationNumber'];
+    let ngoQuery = await stub.getState(ngoKey);
+    if (!ngoQuery.toString()) {
+      throw new Error('##### createDonation - Cannot create donation as the NGO does not exist: ' + json['ngoRegistrationNumber']);
+    }
+
+    // Confirm the donor exists
+    let donorKey = 'donor' + json['donorUserName'];
+    let donorQuery = await stub.getState(donorKey);
+    if (!donorQuery.toString()) {
+      throw new Error('##### createDonation - Cannot create donation as the Donor does not exist: ' + json['donorUserName']);
+    }
+
+    // Check if the Donation already exists
+    let donationQuery = await stub.getState(key);
+    if (donationQuery.toString()) {
+      throw new Error('##### createDonation - This Donation already exists: ' + json['donationId']);
+    }
+
+    await stub.putState(key, Buffer.from(JSON.stringify(json)));
+    console.log('============= END : createDonation ===========');
+  }
+
+  /**
+   * Retrieves a specfic donation
+   * 
+   * @param {*} stub 
+   * @param {*} args 
+   */
+  async queryDonation(stub, args) {
+    console.log('============= START : queryDonation ===========');
+    console.log('##### queryDonation arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+    let key = 'donation' + json['donationId'];
+    console.log('##### queryDonation key: ' + key);
+    return queryByKey(stub, key);
+  }
+
+  /**
+   * Retrieves donations for a specfic donor
+   * 
+   * @param {*} stub 
+   * @param {*} args 
+   */
+  async queryDonationsForDonor(stub, args) {
+    console.log('============= START : queryDonationsForDonor ===========');
+    console.log('##### queryDonationsForDonor arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+    let queryString = '{"selector": {"docType": "donation", "donorUserName": "' + json['donorUserName'] + '"}}';
+    return queryByString(stub, queryString);
+  }
+
+  /**
+   * Retrieves donations for a specfic ngo
+   * 
+   * @param {*} stub 
+   * @param {*} args 
+   */
+  async queryDonationsForNGO(stub, args) {
+    console.log('============= START : queryDonationsForNGO ===========');
+    console.log('##### queryDonationsForNGO arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+    let queryString = '{"selector": {"docType": "donation", "ngoRegistrationNumber": "' + json['ngoRegistrationNumber'] + '"}}';
+    return queryByString(stub, queryString);
+  }
+
+  /**
+   * Retrieves all donations
+   * 
+   * @param {*} stub 
+   * @param {*} args 
+   */
+  async queryAllDonations(stub, args) {
+    console.log('============= START : queryAllDonations ===========');
+    console.log('##### queryAllDonations arguments: ' + JSON.stringify(args)); 
+    let queryString = '{"selector": {"docType": "donation"}}';
+    return queryByString(stub, queryString);
+  }
+
+  /************************************************************************************************
+   * 
+   * Spend functions 
+   * 
+   ************************************************************************************************/
+
+  /**
+   * Creates a new Spend
+   * 
+   * @param {*} stub 
+   * @param {*} args - JSON as follows:
+   * {
+   *    "ngoRegistrationNumber":"6322",
+   *    "spendId":"2",
+   *    "spendDescription":"Peter Pipers Poulty Portions for Pets",
+   *    "spendDate":"2018-09-20T12:41:59.582Z",
+   *    "spendAmount":33,
+   * }
+   */
+  async createSpend(stub, args) {
+    console.log('============= START : createSpend ===========');
+    console.log('##### createSpend arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+    let key = 'spend' + json['spendId'];
+    json['docType'] = 'spend';
+
+    console.log('##### createSpend spend: ' + JSON.stringify(json));
+
+    // Confirm the NGO exists
+    let ngoKey = 'ngo' + json['ngoRegistrationNumber'];
+    let ngoQuery = await stub.getState(ngoKey);
+    if (!ngoQuery.toString()) {
+      throw new Error('##### createDonation - Cannot create spend record as the NGO does not exist: ' + json['ngoRegistrationNumber']);
+    }
+
+    // Check if the Spend already exists
+    let spendQuery = await stub.getState(key);
+    if (spendQuery.toString()) {
+      throw new Error('##### createSpend - This Spend already exists: ' + json['spendId']);
+    }
+
+    await allocateSpend(stub, json);
+
+    await stub.putState(key, Buffer.from(JSON.stringify(json)));
+    console.log('============= END : createSpend ===========');
+  }
+
+  /**
+   * Retrieves a specfic spend
+   * 
+   * @param {*} stub 
+   * @param {*} args 
+   */
+  async querySpend(stub, args) {
+    console.log('============= START : querySpend ===========');
+    console.log('##### querySpend arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+    let key = 'spend' + json['spendId'];
+    console.log('##### querySpend key: ' + key);
+    return queryByKey(stub, key);
+  }
+
+  /**
+   * Retrieves spend for a specfic ngo
+   * 
+   * @param {*} stub 
+   * @param {*} args 
+   */
+  async querySpendForNGO(stub, args) {
+    console.log('============= START : querySpendForNGO ===========');
+    console.log('##### querySpendForNGO arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+    let queryString = '{"selector": {"docType": "spend", "ngoRegistrationNumber": "' + json['ngoRegistrationNumber'] + '"}}';
+    return queryByString(stub, queryString);
+  }
+
+  /**
+   * Retrieves all spend
+   * 
+   * @param {*} stub 
+   * @param {*} args 
+   */
+  async queryAllSpend(stub, args) {
+    console.log('============= START : queryAllSpends ===========');
+    console.log('##### queryAllSpends arguments: ' + JSON.stringify(args)); 
+    let queryString = '{"selector": {"docType": "spend"}}';
+    return queryByString(stub, queryString);
+  }
+
+  /************************************************************************************************
+   * 
+   * SpendAllocation functions 
+   * 
+   ************************************************************************************************/
+
+  /**
+   * There is no CREATE SpendAllocation - the allocations are created in the function: allocateSpend
+   * 
+   * SPENDALLOCATION records look as follows:
+   *
+   * {
+   *   "docType":"spendAllocation",
+   *   "spendAllocationId":"c5b39e938a29a80c225d10e8327caaf817f76aecd381c868263c4f59a45daf62-1",
+   *   "spendAllocationAmount":38.5,
+   *   "spendAllocationDate":"2018-09-20T12:41:59.582Z",
+   *   "spendAllocationDescription":"Peter Pipers Poulty Portions for Pets",
+   *   "donationId":"FFF6A68D-DB19-4CD3-97B0-01C1A793ED3B",
+   *   "ngoRegistrationNumber":"D0884B20-385D-489E-A9FD-2B6DBE5FEA43",
+   *   "spendId": "1234"
+   * }
+   */
+
+  /**
+   * Retrieves a specfic spendAllocation
+   * 
+   * @param {*} stub 
+   * @param {*} args 
+   */
+  async querySpendAllocation(stub, args) {
+    console.log('============= START : querySpendAllocation ===========');
+    console.log('##### querySpendAllocation arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+    let key = 'spendAllocation' + json['spendAllocationId'];
+    console.log('##### querySpendAllocation key: ' + key);
+    return queryByKey(stub, key);
+  }
+
+  /**
+   * Retrieves the spendAllocation records for a specific Donation
+   * 
+   * @param {*} stub 
+   * @param {*} args 
+   */
+  async querySpendAllocationForDonation(stub, args) {
+    console.log('============= START : querySpendAllocationForDonation ===========');
+    console.log('##### querySpendAllocationForDonation arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+    let queryString = '{"selector": {"docType": "spendAllocation", "donationId": "' + json['donationId'] + '"}}';
+    return queryByString(stub, queryString);
+  }
+
+  /**
+   * Retrieves the spendAllocation records for a specific Spend record
+   * 
+   * @param {*} stub 
+   * @param {*} args 
+   */
+  async querySpendAllocationForSpend(stub, args) {
+    console.log('============= START : querySpendAllocationForSpend ===========');
+    console.log('##### querySpendAllocationForSpend arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+    let queryString = '{"selector": {"docType": "spendAllocation", "spendId": "' + json['spendId'] + '"}}';
+    return queryByString(stub, queryString);
+  }
+
+  /**
+   * Retrieves all spendAllocations
+   * 
+   * @param {*} stub 
+   * @param {*} args 
+   */
+  async queryAllSpendAllocations(stub, args) {
+    console.log('============= START : queryAllSpendAllocations ===========');
+    console.log('##### queryAllSpendAllocations arguments: ' + JSON.stringify(args)); 
+    let queryString = '{"selector": {"docType": "spendAllocation"}}';
+    return queryByString(stub, queryString);
+  }
+
+  /************************************************************************************************
+   * 
+   * Ratings functions 
+   * 
+   ************************************************************************************************/
+
+  /**
+   * Creates a new Rating
+   * 
+   * @param {*} stub 
+   * @param {*} args - JSON as follows:
+   * {
+   *    "ngoRegistrationNumber":"6322",
+   *    "donorUserName":"edge",
+   *    "rating":1,
+   * }
+   */
+  async createRating(stub, args) {
+    console.log('============= START : createRating ===========');
+    console.log('##### createRating arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+    let key = 'rating' + json['ngoRegistrationNumber'] + json['donorUserName'];
+    json['docType'] = 'rating';
+
+    console.log('##### createRating payload: ' + JSON.stringify(json));
+
+    // Check if the Rating already exists
+    let ratingQuery = await stub.getState(key);
+    if (ratingQuery.toString()) {
+      throw new Error('##### createRating - Rating by donor: ' +  json['donorUserName'] + ' for NGO: ' + json['ngoRegistrationNumber'] + ' already exists');
+    }
+
+    await stub.putState(key, Buffer.from(JSON.stringify(json)));
+    console.log('============= END : createRating ===========');
+  }
+
+  /**
+   * Retrieves ratings for a specfic ngo
+   * 
+   * @param {*} stub 
+   * @param {*} args 
+   */
+  async queryRatingsForNGO(stub, args) {
+    console.log('============= START : queryRatingsForNGO ===========');
+    console.log('##### queryRatingsForNGO arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+    let queryString = '{"selector": {"docType": "rating", "ngoRegistrationNumber": "' + json['ngoRegistrationNumber'] + '"}}';
+    return queryByString(stub, queryString);
+  }
+
+  /**
+   * Retrieves ratings for an ngo made by a specific donor
+   * 
+   * @param {*} stub 
+   * @param {*} args 
+   */
+  async queryDonorRatingsForNGO(stub, args) {
+    console.log('============= START : queryDonorRatingsForNGO ===========');
+    console.log('##### queryDonorRatingsForNGO arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+    let key = 'rating' + json['ngoRegistrationNumber'] + json['donorUserName'];
+    console.log('##### queryDonorRatingsForNGO key: ' + key);
+    return queryByKey(stub, key);
   }
 
   /************************************************************************************************
