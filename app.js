@@ -258,11 +258,11 @@ app.get('/product/:serialnumber', awaitHandler(async (req, res) => {
  	res.send(message);
 }));
 
-// POST Donor
+// POST Product
 app.post('/product', awaitHandler(async (req, res) => {
 	logger.info('================ POST on Product');
 	var args = req.body;
-	var fcn = "createDonor";
+	var fcn = "createProduct";
 
     logger.info('##### POST on Product - username : ' + username);
 	logger.info('##### POST on Product - userOrg : ' + orgName);
@@ -317,11 +317,11 @@ app.get('/provider/:serialnumber', awaitHandler(async (req, res) => {
  	res.send(message);
 }));
 
-// POST Donor
-app.post('/Provider', awaitHandler(async (req, res) => {
+// POST Provider
+app.post('/provider', awaitHandler(async (req, res) => {
 	logger.info('================ POST on Provider');
 	var args = req.body;
-	var fcn = "createDonor";
+	var fcn = "createProvider";
 
     logger.info('##### POST on Provider - username : ' + username);
 	logger.info('##### POST on Provider - userOrg : ' + orgName);
@@ -376,11 +376,11 @@ app.get('/owner/:serialnumber', awaitHandler(async (req, res) => {
  	res.send(message);
 }));
 
-// POST Donor
+// POST Owner
 app.post('/owner', awaitHandler(async (req, res) => {
 	logger.info('================ POST on Owner');
 	var args = req.body;
-	var fcn = "createDonor";
+	var fcn = "createOwner";
 
     logger.info('##### POST on Owner - username : ' + username);
 	logger.info('##### POST on Owner - userOrg : ' + orgName);
