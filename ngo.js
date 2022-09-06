@@ -543,15 +543,15 @@ let Chaincode = class {
     // args is passed as a JSON string
     let json = JSON.parse(args);
     let key = 'product' + json['serialnumber'];
-    json['docType'] = 'product';
+//    json['docType'] = 'product';
 
     console.log('##### createProduct payload: ' + JSON.stringify(json));
 
     // Check if the product already exists
-    let productQuery = await stub.getState(key);
-    if (productQuery.toString()) {
-      throw new Error('##### createProduct - This product already exists: ' + json['productUserName']);
-    }
+//    let productQuery = await stub.getState(key);
+//    if (productQuery.toString()) {
+//      throw new Error('##### createProduct - This product already exists: ' + json['serialnumber']);
+//    }
 
     await stub.putState(key, Buffer.from(JSON.stringify(json)));
     console.log('============= END : createProduct ===========');
@@ -616,7 +616,7 @@ let Chaincode = class {
     // args is passed as a JSON string
     let json = JSON.parse(args);
     let key = 'provider' + json['serialnumber'];
-    json['docType'] = 'provider';
+//    json['docType'] = 'provider';
 
     console.log('##### createProvider payload: ' + JSON.stringify(json));
 
