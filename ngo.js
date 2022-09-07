@@ -590,7 +590,7 @@ let Chaincode = class {
  
     let json = JSON.parse(args);
     let key = 'provider' + json['serialnumber'];
-    let queryString = '{"selector": {"docType": ' + key + '}}';
+    let queryString = '{"selector": {"docType": "' + key + '"}}';
     console.log('##### queryProviders key: ' + key);
 
     return queryByString(stub, queryString);
@@ -668,7 +668,7 @@ let Chaincode = class {
  
     let json = JSON.parse(args);
     let key = 'owner' + json['serialnumber'];
-    let queryString = '{"selector": {"docType": ' + key + '}}';
+    let queryString = '{"selector": {"docType": "' + key + '"}}';
     console.log('##### queryOwners key: ' + key);
 
     return queryByString(stub, queryString);
