@@ -221,7 +221,7 @@ app.get('/providers/:serialnumber', awaitHandler(async (req, res) => {
 }));
 
 // GET a specific Provider
-app.get('/providers/:serial_type', awaitHandler(async (req, res) => {
+app.get('/providers/:serialnumber_type', awaitHandler(async (req, res) => {
 	logger.info('================ GET on Provider by ID');
 	logger.info('Provider username : ' + req.params);
 	let args = req.params;
@@ -280,7 +280,7 @@ app.get('/owners/:serialnumber', awaitHandler(async (req, res) => {
 }));
 
 // GET a specific Owner
-app.get('/owners/:serial_email', awaitHandler(async (req, res) => {
+app.get('/owners/:serialnumber_email', awaitHandler(async (req, res) => {
 	logger.info('================ GET on Owner by ID');
 	logger.info('Owner username : ' + req.params);
 	let args = req.params;
