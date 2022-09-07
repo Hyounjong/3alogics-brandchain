@@ -146,7 +146,7 @@ app.post('/users', awaitHandler(async (req, res) => {
 // GET Product
 app.get('/products', awaitHandler(async (req, res) => {
 	logger.info('================ GET on Product');
-	let args = {};
+	let args = req.params;
 	let fcn = "queryAllProducts";
 
     logger.info('##### GET on Product - username : ' + username);
@@ -203,10 +203,10 @@ app.post('/products', awaitHandler(async (req, res) => {
  ************************************************************************************/
 
 // GET Provider
-app.get('/providers', awaitHandler(async (req, res) => {
+app.get('/providers/:serialnumber', awaitHandler(async (req, res) => {
 	logger.info('================ GET on Provider');
-	let args = {};
-	let fcn = "queryAllProviders";
+	let args = req.params;
+	let fcn = "queryProviders";
 
     logger.info('##### GET on Provider - username : ' + username);
 	logger.info('##### GET on Provider - userOrg : ' + orgName);
@@ -221,7 +221,7 @@ app.get('/providers', awaitHandler(async (req, res) => {
 }));
 
 // GET a specific Provider
-app.get('/providers/:serialnumber', awaitHandler(async (req, res) => {
+app.get('/providers/:serial_type', awaitHandler(async (req, res) => {
 	logger.info('================ GET on Provider by ID');
 	logger.info('Provider username : ' + req.params);
 	let args = req.params;
@@ -262,10 +262,10 @@ app.post('/providers', awaitHandler(async (req, res) => {
  ************************************************************************************/
 
 // GET Owner
-app.get('/owners', awaitHandler(async (req, res) => {
+app.get('/owners/:serialnumber', awaitHandler(async (req, res) => {
 	logger.info('================ GET on Owner');
-	let args = {};
-	let fcn = "queryAllOwners";
+	let args = req.params;
+	let fcn = "queryOwners";
 
     logger.info('##### GET on Owner - username : ' + username);
 	logger.info('##### GET on Owner - userOrg : ' + orgName);
@@ -280,7 +280,7 @@ app.get('/owners', awaitHandler(async (req, res) => {
 }));
 
 // GET a specific Owner
-app.get('/owners/:serialnumber', awaitHandler(async (req, res) => {
+app.get('/owners/:serial_email', awaitHandler(async (req, res) => {
 	logger.info('================ GET on Owner by ID');
 	logger.info('Owner username : ' + req.params);
 	let args = req.params;
