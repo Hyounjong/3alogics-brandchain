@@ -146,7 +146,7 @@ app.post('/users', awaitHandler(async (req, res) => {
 // GET Product
 app.get('/products', awaitHandler(async (req, res) => {
 	logger.info('================ GET on Product');
-	let args = req.params;
+	let args = {};
 	let fcn = "queryAllProducts";
 
     logger.info('##### GET on Product - username : ' + username);
@@ -162,7 +162,7 @@ app.get('/products', awaitHandler(async (req, res) => {
 }));
 
 // GET a specific Product
-app.get('/products/:serialnumber', awaitHandler(async (req, res) => {
+app.get('/product/:serialnumber', awaitHandler(async (req, res) => {
 	logger.info('================ GET on Product by ID');
 	logger.info('Product username : ' + req.params);
 	let args = req.params;
@@ -203,10 +203,10 @@ app.post('/products', awaitHandler(async (req, res) => {
  ************************************************************************************/
 
 // GET Provider
-app.get('/providers/:serialnumber', awaitHandler(async (req, res) => {
+app.get('/providers', awaitHandler(async (req, res) => {
 	logger.info('================ GET on Provider');
-	let args = req.params;
-	let fcn = "queryProviders";
+	let args = {};
+	let fcn = "queryAllProviders";
 
     logger.info('##### GET on Provider - username : ' + username);
 	logger.info('##### GET on Provider - userOrg : ' + orgName);
@@ -221,11 +221,11 @@ app.get('/providers/:serialnumber', awaitHandler(async (req, res) => {
 }));
 
 // GET a specific Provider
-app.get('/providers/:serialnumber_type', awaitHandler(async (req, res) => {
+app.get('/providers/:serialnumber', awaitHandler(async (req, res) => {
 	logger.info('================ GET on Provider by ID');
 	logger.info('Provider username : ' + req.params);
 	let args = req.params;
-	let fcn = "queryProvider";
+	let fcn = "queryProviders";
 
     logger.info('##### GET on Provider by username - username : ' + username);
 	logger.info('##### GET on Provider by username - userOrg : ' + orgName);
@@ -262,10 +262,10 @@ app.post('/providers', awaitHandler(async (req, res) => {
  ************************************************************************************/
 
 // GET Owner
-app.get('/owners/:serialnumber', awaitHandler(async (req, res) => {
+app.get('/owners', awaitHandler(async (req, res) => {
 	logger.info('================ GET on Owner');
-	let args = req.params;
-	let fcn = "queryOwners";
+	let args = {};
+	let fcn = "queryAllOwners";
 
     logger.info('##### GET on Owner - username : ' + username);
 	logger.info('##### GET on Owner - userOrg : ' + orgName);
@@ -280,11 +280,11 @@ app.get('/owners/:serialnumber', awaitHandler(async (req, res) => {
 }));
 
 // GET a specific Owner
-app.get('/owners/:serialnumber_email', awaitHandler(async (req, res) => {
+app.get('/owners/:serialnumber', awaitHandler(async (req, res) => {
 	logger.info('================ GET on Owner by ID');
 	logger.info('Owner username : ' + req.params);
 	let args = req.params;
-	let fcn = "queryOwner";
+	let fcn = "queryOwners";
 
     logger.info('##### GET on Owner by username - username : ' + username);
 	logger.info('##### GET on Owner by username - userOrg : ' + orgName);
