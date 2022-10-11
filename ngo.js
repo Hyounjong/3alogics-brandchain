@@ -551,10 +551,10 @@ let Chaincode = class {
     console.log('##### createProvider payload: ' + JSON.stringify(json));
 
     // Check if the provider already exists
-//    let providerQuery = await stub.getState(key);
-//    if (providerQuery.toString()) {
-//      throw new Error('##### createProvider - This provider already exists: ' + json['serialnumber']);
-//    }
+    let providerQuery = await stub.getState(key);
+    if (providerQuery.toString()) {
+      throw new Error('##### createProvider - This provider already exists: ' + json['serialnumber']);
+    }
 
     await stub.putState(key, Buffer.from(JSON.stringify(json)));
     console.log('============= END : createProvider ===========');
@@ -572,9 +572,8 @@ let Chaincode = class {
 
     // args is passed as a JSON string
     let json = JSON.parse(args);
-//    let key = 'provider' + json['serialnumber'];
-//    console.log('##### queryProvider key: ' + key);
-//    return queryByKey(stub, key);
+    let key = 'provider' + json['serialnumber'];
+    console.log('##### queryProvider key: ' + key);
 
     let queryString = '{"selector": {"docType": "provider", "serialnumber": "' + json['serialnumber'] + '"}}';
     return queryByString(stub, queryString);
@@ -621,18 +620,27 @@ let Chaincode = class {
 
     // args is passed as a JSON string
     let json = JSON.parse(args);
-    let key = 'owner' + json['serialnumber'] + json['email'];
-    json['docType'] = 'owner';
+    if (json['ownerType'] == '0') {
+      let key = 'owner' + json['serialnumber'] + json['ownerType'];
+      json['docType'] = 'owner';
 
-    console.log('##### createOwner payload: ' + JSON.stringify(json));
+      console.log('##### createOwner payload: ' + JSON.stringify(json));
 
-    // Check if the owner already exists
-//    let ownerQuery = await stub.getState(key);
-//    if (ownerQuery.toString()) {
-//      throw new Error('##### createOwner - This owner already exists: ' + json['serialnumber']);
-//    }
+      // Check if the owner already exists
+      let ownerQuery = await stub.getState(key);
+      if (ownerQuery.toString()) {
+        throw new Error('##### createOwner - This ownerType 0 already exists: ' + json['serialnumber']);
+      }
 
-    await stub.putState(key, Buffer.from(JSON.stringify(json)));
+      await stub.putState(key, Buffer.from(JSON.stringify(json)));
+    } else {
+      let key = 'owner' + json['serialnumber'] + json['datetime'];
+      json['docType'] = 'owner';
+
+      console.log('##### createOwner payload: ' + JSON.stringify(json));
+
+      await stub.putState(key, Buffer.from(JSON.stringify(json)));
+    }
     console.log('============= END : createOwner ===========');
   }
 
@@ -648,9 +656,8 @@ let Chaincode = class {
 
     // args is passed as a JSON string
     let json = JSON.parse(args);
-//    let key = 'owner' + json['serialnumber'];
-//    console.log('##### queryOwner key: ' + key);
-//    return queryByKey(stub, key);
+    let key = 'owner' + json['serialnumber'];
+    console.log('##### queryOwner key: ' + key);
 
     let queryString = '{"selector": {"docType": "owner", "serialnumber": "' + json['serialnumber'] + '"}}';
     return queryByString(stub, queryString);
