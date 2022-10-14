@@ -634,6 +634,16 @@ let Chaincode = class {
 
       await stub.putState(key, Buffer.from(JSON.stringify(json)));
     } else {
+      let pKey = 'owner' + json['serialnumber'] + '0';
+
+      // Check if the owner already exists
+      let ownerQuery = await stub.getState(pKey);
+      if (ownerQuery.toString()) {
+//        throw new Error('##### createOwner - This ownerType 0 already exists: ' + json['serialnumber']);
+      } else {
+	throw new Error('##### createOwner - This ownerType 0 does not exist: ' + json['serialnumber']);
+      }
+
       let key = 'owner' + json['serialnumber'] + json['datetime'];
       json['docType'] = 'owner';
 
