@@ -644,7 +644,7 @@ let Chaincode = class {
 	throw new Error('##### createOwner - This ownerType 0 does not exist: ' + json['serialnumber']);
       }
 
-      let key = 'owner' + json['serialnumber'] + json['datetime'];
+      let key = 'owner' + json['serialnumber'] + json['datetime'] + json['mobile'];
       json['docType'] = 'owner';
 
       console.log('##### createOwner payload: ' + JSON.stringify(json));
