@@ -467,7 +467,7 @@ let Chaincode = class {
    * }
    */
   async createProduct(stub, args) {
-    console.log('============= START : createProduct ===========');
+    console.log('============= POST : createProduct ===========');
     console.log('##### createProduct arguments: ' + JSON.stringify(args));
 
     // args is passed as a JSON string
@@ -494,15 +494,17 @@ let Chaincode = class {
    * @param {*} args 
    */
   async queryProduct(stub, args) {
-    console.log('============= START : queryProduct ===========');
+    console.log('============= GET : queryProduct ===========');
     console.log('##### queryProduct arguments: ' + JSON.stringify(args));
 
     // args is passed as a JSON string
     let json = JSON.parse(args);
-    let key = 'product' + json['serialnumber'];
-    console.log('##### queryProduct key: ' + key);
+//    let key = 'product' + json['serialnumber'];
+//    console.log('##### queryProduct key: ' + key);
 
-    return queryByKey(stub, key);
+    let queryString = '{"selector": {"docType": "product", "serialnumber": "' + json['serialnumber'] + '"}}';
+    return queryByString(stub, queryString);
+//    return queryByKey(stub, key);
   }
 
   /**
@@ -512,7 +514,7 @@ let Chaincode = class {
    * @param {*} args 
    */
   async queryAllProducts(stub, args) {
-    console.log('============= START : queryAllProducts ===========');
+    console.log('============= GET : queryAllProducts ===========');
     console.log('##### queryAllProducts arguments: ' + JSON.stringify(args));
  
     let queryString = '{"selector": {"docType": "product"}}';
@@ -540,7 +542,7 @@ let Chaincode = class {
    * }
    */
   async createProvider(stub, args) {
-    console.log('============= START : createProvider ===========');
+    console.log('============= POST : createProvider ===========');
     console.log('##### createProvider arguments: ' + JSON.stringify(args));
 
     // args is passed as a JSON string
@@ -567,13 +569,13 @@ let Chaincode = class {
    * @param {*} args 
    */
   async queryProviders(stub, args) {
-    console.log('============= START : queryProvider ===========');
+    console.log('============= GET : queryProvider ===========');
     console.log('##### queryProvider arguments: ' + JSON.stringify(args));
 
     // args is passed as a JSON string
     let json = JSON.parse(args);
-    let key = 'provider' + json['serialnumber'];
-    console.log('##### queryProvider key: ' + key);
+//    let key = 'provider' + json['serialnumber'];
+//    console.log('##### queryProvider key: ' + key);
 
     let queryString = '{"selector": {"docType": "provider", "serialnumber": "' + json['serialnumber'] + '"}}';
     return queryByString(stub, queryString);
@@ -586,7 +588,7 @@ let Chaincode = class {
    * @param {*} args 
    */
   async queryAllProviders(stub, args) {
-    console.log('============= START : queryAllProviders ===========');
+    console.log('============= GET : queryAllProviders ===========');
     console.log('##### queryAllProviders arguments: ' + JSON.stringify(args));
  
     let queryString = '{"selector": {"docType": "provider"}}';
@@ -615,7 +617,7 @@ let Chaincode = class {
    * }
    */
   async createOwner(stub, args) {
-    console.log('============= START : createOwner ===========');
+    console.log('============= POST : createOwner ===========');
     console.log('##### createOwner arguments: ' + JSON.stringify(args));
 
     // args is passed as a JSON string
@@ -661,13 +663,13 @@ let Chaincode = class {
    * @param {*} args 
    */
   async queryOwners(stub, args) {
-    console.log('============= START : queryOwner ===========');
+    console.log('============= GET : queryOwner ===========');
     console.log('##### queryOwner arguments: ' + JSON.stringify(args));
 
     // args is passed as a JSON string
     let json = JSON.parse(args);
-    let key = 'owner' + json['serialnumber'];
-    console.log('##### queryOwner key: ' + key);
+//    let key = 'owner' + json['serialnumber'];
+//    console.log('##### queryOwner key: ' + key);
 
     let queryString = '{"selector": {"docType": "owner", "serialnumber": "' + json['serialnumber'] + '"}}';
     return queryByString(stub, queryString);
@@ -680,7 +682,7 @@ let Chaincode = class {
    * @param {*} args 
    */
   async queryAllOwners(stub, args) {
-    console.log('============= START : queryAllOwners ===========');
+    console.log('============= GET : queryAllOwners ===========');
     console.log('##### queryAllOwners arguments: ' + JSON.stringify(args));
  
     let queryString = '{"selector": {"docType": "owner"}}';
