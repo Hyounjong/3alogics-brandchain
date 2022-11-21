@@ -667,11 +667,12 @@ let Chaincode = class {
 
     // args is passed as a JSON string
     let json = JSON.parse(args);
-//    let key = 'owner' + json['serialnumber'];
-//    console.log('##### queryOwner key: ' + key);
+    let key = 'owner' + json['serialnumber'];
+    console.log('##### queryOwner key: ' + key);
 
-    let queryString = '{"selector": {"docType": "owner", "serialnumber": "' + json['serialnumber'] + '"}}';
-    return queryByString(stub, queryString);
+    return queryByKey(stub, key);
+//    let queryString = '{"selector": {"docType": "owner", "serialnumber": "' + json['serialnumber'] + '"}}';
+//    return queryByString(stub, queryString);
   }
 
   /**
