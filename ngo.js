@@ -616,7 +616,50 @@ let Chaincode = class {
    *    "datetime":"2022-09-05 15:31:56"
    * }
    */
-  async createOwner(stub, args) {
+async createOwner(stub, args) {
+    console.log('============= POST : createOwner ===========');
+    console.log('##### createOwner arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+
+    if (json['ownerType'] == '0') {
+      // let key = 'owner' + json['serialnumber'] + json['ownerType'];
+      let compositeKey = await stub.createCompositeKey('owner', [json['serialnumber'], json['ownerType']]);
+
+      json['docType'] = 'owner';
+
+      console.log('##### createOwner payload: ' + JSON.stringify(json));
+
+      // Check if the owner already exists
+      // let ownerQuery = await stub.getState(key);
+      // if (ownerQuery.toString()) {
+      //   throw new Error('##### createOwner - This ownerType 0 already exists: ' + json['serialnumber']);
+      // }
+
+      await stub.putState(compositeKey, Buffer.from(JSON.stringify(json)));
+    } else {
+//      let pKey = 'owner' + json['serialnumber'] + '0';
+
+      // Check if the owner already exists
+//      let ownerQuery = await stub.getState(pKey);
+//      if (ownerQuery.toString()) {
+//      } else {
+////	  throw new Error('##### createOwner - This ownerType 0 does not exist: ' + json['serialnumber']);
+//      }
+
+      // let key = 'owner' + json['serialnumber'] + '1' + json['datetime'] + json['mobile'];
+      let compositeKey = await stub.createCompositeKey('owner', [json['serialnumber'], json['ownerType'], json['datetime'], json['mobile']]);
+      json['docType'] = 'owner';
+
+      console.log('##### createOwner payload: ' + JSON.stringify(json));
+
+      await stub.putState(compositeKey, Buffer.from(JSON.stringify(json)));
+    }
+    console.log('============= END : createOwner ===========');
+  }
+
+  async createOwner2(stub, args) {
     console.log('============= POST : createOwner ===========');
     console.log('##### createOwner arguments: ' + JSON.stringify(args));
 
@@ -667,12 +710,43 @@ let Chaincode = class {
 
     // args is passed as a JSON string
     let json = JSON.parse(args);
-    let key = 'owner' + json['serialnumber'];
-    console.log('##### queryOwner key: ' + key);
 
-    return queryByKey(stub, key);
-//    let queryString = '{"selector": {"docType": "owner", "serialnumber": "' + json['serialnumber'] + '"}}';
-//    return queryByString(stub, queryString);
+    let allResults = [];
+    let res = { done: false, value: null };
+    let jsonRes = {};
+    res= await stub.getStateByPartialCompositeKey('owner', [json['serialnumber']]);
+
+    while (!res.done) {
+      jsonRes.Key = res.value.key;
+
+      try {
+        jsonRes.Record = JSON.parse(res.value.value.toString('utf8'));
+        allResults.push(jsonRes);
+        res = await iterator.next();
+      }
+      catch (err) {
+        console.log(err);
+        return {}
+      }
+  
+    }
+
+    await iterator.close();
+    return allResults;
+  }
+
+  async queryOwners2(stub, args) {
+    console.log('============= GET : queryOwner ===========');
+    console.log('##### queryOwner arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+//    let key = 'owner' + json['serialnumber'];
+//    console.log('##### queryOwner key: ' + key);
+
+//    return queryByKey(stub, key);
+    let queryString = '{"selector": {"docType": "owner", "serialnumber": "' + json['serialnumber'] + '"}}';
+    return queryByString(stub, queryString);
   }
 
   /**
