@@ -669,7 +669,7 @@ console.log('##### createOwner compositeKey: ' + compositeKey);
     let json = JSON.parse(args);
     if (json['ownerType'] == '0') {
       let key = 'owner' + json['serialnumber'] + json['ownerType'];
-      json['docType'] = 'owner' + json['serialnumber'];
+      json['docType'] = 'owner';
 
       console.log('##### createOwner payload: ' + JSON.stringify(json));
 
