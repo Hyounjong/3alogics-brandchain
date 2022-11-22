@@ -734,7 +734,7 @@ async queryOwners(stub, args) {
 	console.log('##### queryOwner6')
 	  let state = JSON.parse(data.value.value.toString('utf8'))
 	console.log('##### queryOwner6 state: ' + state)
-	  states.push(state);
+	  //states.push(state);
         }
         if (data.done) {
 	console.log('##### queryOwner7')
