@@ -718,25 +718,26 @@ console.log('##### queryOwner1')
     res= await stub.getStateByPartialCompositeKey('owner', [json['serialnumber']]);
 console.log('##### queryOwner2')
     while (!res.done) {
+console.log('##### queryOwner3')
       jsonRes.Key = res.value.key;
 
       try {
-console.log('##### queryOwner3')
+console.log('##### queryOwner4')
         jsonRes.Record = JSON.parse(res.value.value.toString('utf8'));
         allResults.push(jsonRes);
         res = await iterator.next();
-console.log('##### queryOwner4')
+console.log('##### queryOwner5')
       }
       catch (err) {
-console.log('##### queryOwner5')
+console.log('##### queryOwner6')
         console.log(err);
         return {}
       }
   
     }
-console.log('##### queryOwner6')
-    await iterator.close();
 console.log('##### queryOwner7')
+    await iterator.close();
+console.log('##### queryOwner8')
     return allResults;
   }
 
