@@ -714,12 +714,12 @@ console.log('##### queryOwner1')
 
     let allResults = [];
     let res = { done: false, value: null };
-    let jsonRes = { Key: null, Record: null };
+    let jsonRes = {};
     res= await stub.getStateByPartialCompositeKey('owner', [json['serialnumber']]);
 console.log('##### queryOwner2')
     while (!res.done) {
 console.log('##### queryOwner3')
-      jsonRes.Key = res.value.key;
+      jsonRes.Key = res.value.Key;
 
       try {
 console.log('##### queryOwner4')
