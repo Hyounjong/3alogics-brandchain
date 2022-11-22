@@ -1,15 +1,15 @@
 /*
 # Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License").
 # You may not use this file except in compliance with the License.
 # A copy of the License is located at
-# 
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
-# 
-# or in the "license" file accompanying this file. This file is distributed 
-# on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either 
-# express or implied. See the License for the specific language governing 
+#
+# or in the "license" file accompanying this file. This file is distributed
+# on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 #
 */
@@ -19,21 +19,21 @@ const shim = require('fabric-shim');
 const util = require('util');
 
 /************************************************************************************************
- * 
- * GENERAL FUNCTIONS 
- * 
+ *
+ * GENERAL FUNCTIONS
+ *
  ************************************************************************************************/
 
 /**
  * Executes a query using a specific key
- * 
+ *
  * @param {*} key - the key to use in the query
  */
 async function queryByKey(stub, key) {
   console.log('============= START : queryByKey ===========');
   console.log('##### queryByKey key: ' + key);
 
-  let resultAsBytes = await stub.getState(key); 
+  let resultAsBytes = await stub.getState(key);
   if (!resultAsBytes || resultAsBytes.toString().length <= 0) {
     throw new Error('##### queryByKey key: ' + key + ' does not exist');
   }
@@ -44,10 +44,10 @@ async function queryByKey(stub, key) {
 
 /**
  * Executes a query based on a provided queryString
- * 
+ *
  * I originally wrote this function to handle rich queries via CouchDB, but subsequently needed
  * to support LevelDB range queries where CouchDB was not available.
- * 
+ *
  * @param {*} queryString - the query string to execute
  */
 async function queryByString(stub, queryString) {
@@ -59,7 +59,7 @@ async function queryByString(stub, queryString) {
 
   // Equivalent LevelDB Query. We need to parse queryString to determine what is being queried
   // In this chaincode, all queries will either query ALL records for a specific docType, or
-  // they will filter ALL the records looking for a specific NGO, Donor, Donation, etc. So far, 
+  // they will filter ALL the records looking for a specific NGO, Donor, Donation, etc. So far,
   // in this chaincode there is a maximum of one filter parameter in addition to the docType.
   let docType = "";
   let startKey = "";
@@ -71,12 +71,12 @@ async function queryByString(stub, queryString) {
     endKey = docType + "z";
   }
   else {
-    throw new Error('##### queryByString - Cannot call queryByString without a docType element: ' + queryString);   
+    throw new Error('##### queryByString - Cannot call queryByString without a docType element: ' + queryString);
   }
 
   let iterator = await stub.getStateByRange(startKey, endKey);
 
-  // Iterator handling is identical for both CouchDB and LevelDB result sets, with the 
+  // Iterator handling is identical for both CouchDB and LevelDB result sets, with the
   // exception of the filter handling in the commented section below
   let allResults = [];
   while (true) {
@@ -89,7 +89,7 @@ async function queryByString(stub, queryString) {
       jsonRes.Key = res.value.key;
       try {
         jsonRes.Record = JSON.parse(res.value.value.toString('utf8'));
-      } 
+      }
       catch (err) {
         console.log('##### queryByString error: ' + err);
         jsonRes.Record = res.value.value.toString('utf8');
@@ -134,16 +134,16 @@ async function queryByString(stub, queryString) {
 
 /**
  * Record spend made by an NGO
- * 
- * This functions allocates the spend amongst the donors, so each donor can see how their 
+ *
+ * This functions allocates the spend amongst the donors, so each donor can see how their
  * donations are spent. The logic works as follows:
- * 
+ *
  *    - Get the donations made to this NGO
  *    - Get the spend per donation, to calculate how much of the donation amount is still available for spending
  *    - Calculate the total amount spent by this NGO
  *    - If there are sufficient donations available, create a SPEND record
  *    - Allocate the spend between all the donations and create SPENDALLOCATION records
- * 
+ *
  * @param {*} spend - the spend amount to be recorded. This will be JSON, as follows:
  * {
  *   "docType": "spend",
@@ -160,11 +160,11 @@ async function allocateSpend(stub, spend) {
 
   // validate we have a valid SPEND object and a valid amount
   if (!(spend && spend['spendAmount'] && typeof spend['spendAmount'] === 'number' && isFinite(spend['spendAmount']))) {
-    throw new Error('##### allocateSpend - Spend Amount is not a valid number: ' + spend['spendAmount']);   
+    throw new Error('##### allocateSpend - Spend Amount is not a valid number: ' + spend['spendAmount']);
   }
   // validate we have a valid SPEND object and a valid SPEND ID
   if (!(spend && spend['spendId'])) {
-    throw new Error('##### allocateSpend - Spend Id is required but does not exist in the spend message');   
+    throw new Error('##### allocateSpend - Spend Id is required but does not exist in the spend message');
   }
 
   // validate that we have a valid NGO
@@ -223,17 +223,17 @@ async function allocateSpend(stub, spend) {
   }
   console.log('##### allocateSpend - Total spend for this ngo is: ' + totalSpend);
   for (let donation of donationSpendMap) {
-    console.log('##### allocateSpend - Total spend against this donation ID: ' + donation[0] + ', spend amount: ' + donation[1] + ', entry: ' + donation);  
+    console.log('##### allocateSpend - Total spend against this donation ID: ' + donation[0] + ', spend amount: ' + donation[1] + ', entry: ' + donation);
     if (donationMap.has(donation[0])) {
-      console.log('##### allocateSpend - The matching donation for this donation ID: ' + donation[0] + ', donation amount: ' + donationMap.get(donation[0]));  
+      console.log('##### allocateSpend - The matching donation for this donation ID: ' + donation[0] + ', donation amount: ' + donationMap.get(donation[0]));
     }
     else {
-      console.log('##### allocateSpend - ERROR - cannot find the matching donation for this spend record for donation ID: ' + donation[0]);  
+      console.log('##### allocateSpend - ERROR - cannot find the matching donation for this spend record for donation ID: ' + donation[0]);
     }
   }
 
   // at this point we have the total amount of donations made by donors to each NGO. We also have the total spend
-  // spent by an NGO with a breakdown per donation. 
+  // spent by an NGO with a breakdown per donation.
 
   // confirm whether the NGO has sufficient available funds to cover the new spend
   let totalAvailable = totalDonations - totalSpend;
@@ -260,17 +260,17 @@ async function allocateSpend(stub, spend) {
   let recordCounter = 0;
 
   while (true) {
-    // spendAmount will be reduced as the spend is allocated to NGOSpendDonationAllocation records. 
+    // spendAmount will be reduced as the spend is allocated to NGOSpendDonationAllocation records.
     // Once it reaches 0 we stop allocating. This caters for cases where the full allocation cannot
-    // be allocated to a donation record. In this case, only the remaining domation amount is allocated 
+    // be allocated to a donation record. In this case, only the remaining domation amount is allocated
     // (see variable amountAllocatedToDonation below).
     // The remaining amount must be allocated to donation records with sufficient available funds.
     if (spendAmount <= 0) {
       break;
     }
-    // calculate the number of donations still available, i.e. donations which still have funds available for spending. 
+    // calculate the number of donations still available, i.e. donations which still have funds available for spending.
     // as the spending reduces the donations there may be fewer and fewer donations available to split the spending between
-    // 
+    //
     // all donations for the NGO are in donationMap. Each entry in the map will look as follows:
     //
     // {"Key":"donation2211","Record":{"docType":"donation","donationAmount":100,"donationDate":"2018-09-20T12:41:59.582Z","donationId":"2211","donorUserName":"edge","ngoRegistrationNumber":"6322"}}
@@ -293,17 +293,17 @@ async function allocateSpend(stub, spend) {
     //Invalid values could be caused by a bug in this function, or invalid values passed to this function
     //that were not caught by the validation process earlier.
     if (!(spendAmount && typeof spendAmount === 'number' && isFinite(spendAmount))) {
-      throw new Error('##### allocateSpend - spendAmount is not a valid number: ' + spendAmount);   
+      throw new Error('##### allocateSpend - spendAmount is not a valid number: ' + spendAmount);
     }
     if (!(numberOfDonations && typeof numberOfDonations === 'number' && numberOfDonations > 0)) {
-      throw new Error('##### allocateSpend - numberOfDonations is not a valid number or is < 1: ' + numberOfDonations);   
+      throw new Error('##### allocateSpend - numberOfDonations is not a valid number or is < 1: ' + numberOfDonations);
     }
     //calculate how much spend to allocate to each donation
     let spendPerDonation = spendAmount / numberOfDonations;
     console.log('##### allocateSpend - Allocating the total spend amount of: ' + spendAmount + ', to ' + numberOfDonations + ' donations, resulting in ' + spendPerDonation + ' per donation');
 
     if (!(spendPerDonation && typeof spendPerDonation === 'number' && isFinite(spendPerDonation))) {
-      throw new Error('##### allocateSpend - spendPerDonation is not a valid number: ' + spendPerDonation);   
+      throw new Error('##### allocateSpend - spendPerDonation is not a valid number: ' + spendPerDonation);
     }
 
     // create the SPENDALLOCATION records. Each record looks as follows:
@@ -367,7 +367,7 @@ async function allocateSpend(stub, spend) {
         donationId: donationId,
         ngoRegistrationNumber: ngo,
         spendId: spend['spendId']
-      }; 
+      };
 
       console.log('##### allocateSpend - creating spendAllocationRecord record: ' + JSON.stringify(spendAllocationRecord));
       await stub.putState(key, Buffer.from(JSON.stringify(spendAllocationRecord)));
@@ -389,20 +389,20 @@ async function allocateSpend(stub, spend) {
     }
   }
   console.log('============= END : allocateSpend ===========');
-}  
+}
 
 /************************************************************************************************
- * 
+ *
  * CHAINCODE
- * 
+ *
  ************************************************************************************************/
 
 let Chaincode = class {
 
   /**
    * Initialize the state when the chaincode is either instantiated or upgraded
-   * 
-   * @param {*} stub 
+   *
+   * @param {*} stub
    */
   async Init(stub) {
     console.log('=========== Init: Instantiated / Upgraded ngo chaincode ===========');
@@ -412,8 +412,8 @@ let Chaincode = class {
   /**
    * The Invoke method will call the methods below based on the method name passed by the calling
    * program.
-   * 
-   * @param {*} stub 
+   *
+   * @param {*} stub
    */
   async Invoke(stub) {
     console.log('============= START : Invoke ===========');
@@ -437,9 +437,9 @@ let Chaincode = class {
 
   /**
    * Initialize the state. This should be explicitly called if required.
-   * 
-   * @param {*} stub 
-   * @param {*} args 
+   *
+   * @param {*} stub
+   * @param {*} args
    */
   async initLedger(stub, args) {
     console.log('============= START : Initialize Ledger ===========');
@@ -447,18 +447,18 @@ let Chaincode = class {
   }
 
   /************************************************************************************************
-   * 
-   * Product functions 
-   * 
+   *
+   * Product functions
+   *
    ************************************************************************************************/
 
    /**
    * Creates a new product
-   * 
-   * @param {*} stub 
+   *
+   * @param {*} stub
    * @param {*} args - JSON as follows:
    * {
-   *    "serialnumber": "e1bdf5dfacd4a6ca21abc8543e6ba43efa37c556d012b6cad0be466234affdba", 
+   *    "serialnumber": "e1bdf5dfacd4a6ca21abc8543e6ba43efa37c556d012b6cad0be466234affdba",
    *    "manufacturer": "GUCCI Factory",
    *    "brand": "GUCCI",
    *    "model": "05T1182Z",
@@ -489,9 +489,9 @@ let Chaincode = class {
 
   /**
    * Retrieves a specfic product
-   * 
-   * @param {*} stub 
-   * @param {*} args 
+   *
+   * @param {*} stub
+   * @param {*} args
    */
   async queryProduct(stub, args) {
     console.log('============= GET : queryProduct ===========');
@@ -502,38 +502,39 @@ let Chaincode = class {
 //    let key = 'product' + json['serialnumber'];
 //    console.log('##### queryProduct key: ' + key);
 
-    let queryString = '{"selector": {"docType": "product", "serialnumber": "' + json['serialnumber'] + '"}}';
+    // let queryString = '{"selector": {"docType": "product", "serialnumber": "' + json['serialnumber'] + '"}}';
+    let queryString = '{"selector": {"docType": "product' + json['serialnumber'] + '"}}';
     return queryByString(stub, queryString);
 //    return queryByKey(stub, key);
   }
 
   /**
    * Retrieves all products
-   * 
-   * @param {*} stub 
-   * @param {*} args 
+   *
+   * @param {*} stub
+   * @param {*} args
    */
   async queryAllProducts(stub, args) {
     console.log('============= GET : queryAllProducts ===========');
     console.log('##### queryAllProducts arguments: ' + JSON.stringify(args));
- 
+
     let queryString = '{"selector": {"docType": "product"}}';
     return queryByString(stub, queryString);
   }
 
   /************************************************************************************************
-   * 
-   * Provider functions 
-   * 
+   *
+   * Provider functions
+   *
    ************************************************************************************************/
 
    /**
    * Creates a new provider
-   * 
-   * @param {*} stub 
+   *
+   * @param {*} stub
    * @param {*} args - JSON as follows:
    * {
-   *    "serialnumber": "e1bdf5dfacd4a6ca21abc8543e6ba43efa37c556d012b6cad0be466234affdba", 
+   *    "serialnumber": "e1bdf5dfacd4a6ca21abc8543e6ba43efa37c556d012b6cad0be466234affdba",
    *    "providerType": "1",
    *    "worker": "Micheal",
    *    "company": "GUCCI Factory",
@@ -564,9 +565,9 @@ let Chaincode = class {
 
   /**
    * Retrieves a specfic provider
-   * 
-   * @param {*} stub 
-   * @param {*} args 
+   *
+   * @param {*} stub
+   * @param {*} args
    */
   async queryProviders(stub, args) {
     console.log('============= GET : queryProvider ===========');
@@ -577,37 +578,38 @@ let Chaincode = class {
 //    let key = 'provider' + json['serialnumber'];
 //    console.log('##### queryProvider key: ' + key);
 
-    let queryString = '{"selector": {"docType": "provider", "serialnumber": "' + json['serialnumber'] + '"}}';
+    // let queryString = '{"selector": {"docType": "provider", "serialnumber": "' + json['serialnumber'] + '"}}';
+    let queryString = '{"selector": {"docType": "provider' + json['serialnumber'] + '"}}';
     return queryByString(stub, queryString);
   }
 
   /**
    * Retrieves all providers
-   * 
-   * @param {*} stub 
-   * @param {*} args 
+   *
+   * @param {*} stub
+   * @param {*} args
    */
   async queryAllProviders(stub, args) {
     console.log('============= GET : queryAllProviders ===========');
     console.log('##### queryAllProviders arguments: ' + JSON.stringify(args));
- 
+
     let queryString = '{"selector": {"docType": "provider"}}';
     return queryByString(stub, queryString);
   }
 
   /************************************************************************************************
-   * 
-   * Owner functions 
-   * 
+   *
+   * Owner functions
+   *
    ************************************************************************************************/
 
    /**
    * Creates a new owner
-   * 
-   * @param {*} stub 
+   *
+   * @param {*} stub
    * @param {*} args - JSON as follows:
    * {
-   *    "serialnumber": "e1bdf5dfacd4a6ca21abc8543e6ba43efa37c556d012b6cad0be466234affdba", 
+   *    "serialnumber": "e1bdf5dfacd4a6ca21abc8543e6ba43efa37c556d012b6cad0be466234affdba",
    *    "ownerType": "1",
    *    "name": "James",
    *    "email": "james@gmail.com",
@@ -616,51 +618,6 @@ let Chaincode = class {
    *    "datetime":"2022-09-05 15:31:56"
    * }
    */
-async createOwner2(stub, args) {
-    console.log('============= POST : createOwner ===========');
-    console.log('##### createOwner arguments: ' + JSON.stringify(args));
-
-    // args is passed as a JSON string
-    let json = JSON.parse(args);
-
-    if (json['ownerType'] == '0') {
-      // let key = 'owner' + json['serialnumber'] + json['ownerType'];
-      let compositeKey = await stub.createCompositeKey('owner', [json['serialnumber'], json['ownerType']]);
-
-      json['docType'] = 'owner';
-
-      console.log('##### createOwner payload: ' + JSON.stringify(json));
-console.log('##### createOwner compositeKey: ' + compositeKey);
-
-      // Check if the owner already exists
-      // let ownerQuery = await stub.getState(key);
-      // if (ownerQuery.toString()) {
-      //   throw new Error('##### createOwner - This ownerType 0 already exists: ' + json['serialnumber']);
-      // }
-
-      await stub.putState(compositeKey, Buffer.from(JSON.stringify(json)));
-    } else {
-//      let pKey = 'owner' + json['serialnumber'] + '0';
-
-      // Check if the owner already exists
-//      let ownerQuery = await stub.getState(pKey);
-//      if (ownerQuery.toString()) {
-//      } else {
-////	  throw new Error('##### createOwner - This ownerType 0 does not exist: ' + json['serialnumber']);
-//      }
-
-      // let key = 'owner' + json['serialnumber'] + '1' + json['datetime'] + json['mobile'];
-      let compositeKey = await stub.createCompositeKey('owner', [json['serialnumber'], json['ownerType'], json['datetime'], json['mobile']]);
-      json['docType'] = 'owner';
-
-      console.log('##### createOwner payload: ' + JSON.stringify(json));
-console.log('##### createOwner compositeKey: ' + compositeKey);
-
-      await stub.putState(compositeKey, Buffer.from(JSON.stringify(json)));
-    }
-    console.log('============= END : createOwner ===========');
-  }
-
   async createOwner(stub, args) {
     console.log('============= POST : createOwner ===========');
     console.log('##### createOwner arguments: ' + JSON.stringify(args));
@@ -702,90 +659,10 @@ console.log('##### createOwner compositeKey: ' + compositeKey);
 
   /**
    * Retrieves a specfic owner
-   * 
-   * @param {*} stub 
-   * @param {*} args 
+   *
+   * @param {*} stub
+   * @param {*} args
    */
-
-async queryOwners2(stub, args) {
-    console.log('============= GET : queryOwner ===========');
-    console.log('##### queryOwner arguments: ' + JSON.stringify(args));
-
-    // args is passed as a JSON string
-    let json = JSON.parse(args);
-
-    console.log('##### queryOwner1')
-
-     let datas = [];
-     let states = [];
-     let iterator2 = await stub.getStateByPartialCompositeKey('owner', [json['serialnumber']]);
-
-     console.log('##### queryOwner2')
-
-     while (true) {
-
-	console.log('##### queryOwner3')
-
-	let data = await iterator2.next();
-	console.log('##### queryOwner4')
-	console.log('##### queryOwner4 data: ' + data)
-	//datas.push(data);
-	console.log('##### queryOwner5')
-	if (data.value) {
-	console.log('##### queryOwner6')
-	  let state = JSON.parse(data.value.value.toString('utf8'))
-	console.log('##### queryOwner6 state: ' + state)
-	  states.push(state);
-        }
-        if (data.done) {
-	console.log('##### queryOwner7')
-	console.log('##### queryOwner7 datas: ' + datas)
-            await iterator2.close();
-            return datas;
-        }
-     }
-  }
-
-  async queryOwners3(stub, args) {
-    console.log('============= GET : queryOwner ===========');
-    console.log('##### queryOwner arguments: ' + JSON.stringify(args));
-
-    // args is passed as a JSON string
-    let json = JSON.parse(args);
-console.log('##### queryOwner1')
-
-    let allResults = [];
-    let res = { done: false, value: null };
-    let jsonRes = {};
-    res= await stub.getStateByPartialCompositeKey('owner', [json['serialnumber']]);
-console.log('##### queryOwner2')
-console.log('##### queryOwner2 res: ' + res);
-console.log('##### queryOwner2 res.done: ' + res.done);
-console.log('##### queryOwner2 res.value: ' + res.value);
-    while (!res.done) {
-console.log('##### queryOwner3')
-      jsonRes.Key = res.value.Key;
-
-      try {
-console.log('##### queryOwner4')
-        jsonRes.Record = JSON.parse(res.value.value.toString('utf8'));
-        allResults.push(jsonRes);
-        res = await iterator.next();
-console.log('##### queryOwner5')
-      }
-      catch (err) {
-console.log('##### queryOwner6')
-        console.log(err);
-        return {}
-      }
-  
-    }
-console.log('##### queryOwner7')
-    await iterator.close();
-console.log('##### queryOwner8')
-    return allResults;
-  }
-
   async queryOwners(stub, args) {
     console.log('============= GET : queryOwner ===========');
     console.log('##### queryOwner arguments: ' + JSON.stringify(args));
@@ -796,35 +673,35 @@ console.log('##### queryOwner8')
 //    console.log('##### queryOwner key: ' + key);
 
 //    return queryByKey(stub, key);
-    //let queryString = '{"selector": {"docType": "owner", "serialnumber": "' + json['serialnumber'] + '"}}';
+    // let queryString = '{"selector": {"docType": "owner", "serialnumber": "' + json['serialnumber'] + '"}}';
     let queryString = '{"selector": {"docType": "owner' + json['serialnumber'] + '"}}';
     return queryByString(stub, queryString);
   }
 
   /**
    * Retrieves all owners
-   * 
-   * @param {*} stub 
-   * @param {*} args 
+   *
+   * @param {*} stub
+   * @param {*} args
    */
   async queryAllOwners(stub, args) {
     console.log('============= GET : queryAllOwners ===========');
     console.log('##### queryAllOwners arguments: ' + JSON.stringify(args));
- 
+
     let queryString = '{"selector": {"docType": "owner"}}';
     return queryByString(stub, queryString);
   }
 
   /************************************************************************************************
-   * 
-   * Donor functions 
-   * 
+   *
+   * Donor functions
+   *
    ************************************************************************************************/
 
    /**
    * Creates a new donor
-   * 
-   * @param {*} stub 
+   *
+   * @param {*} stub
    * @param {*} args - JSON as follows:
    * {
    *    "donorUserName":"edge",
@@ -855,9 +732,9 @@ console.log('##### queryOwner8')
 
   /**
    * Retrieves a specfic donor
-   * 
-   * @param {*} stub 
-   * @param {*} args 
+   *
+   * @param {*} stub
+   * @param {*} args
    */
   async queryDonor(stub, args) {
     console.log('============= START : queryDonor ===========');
@@ -873,28 +750,28 @@ console.log('##### queryOwner8')
 
   /**
    * Retrieves all donors
-   * 
-   * @param {*} stub 
-   * @param {*} args 
+   *
+   * @param {*} stub
+   * @param {*} args
    */
   async queryAllDonors(stub, args) {
     console.log('============= START : queryAllDonors ===========');
     console.log('##### queryAllDonors arguments: ' + JSON.stringify(args));
- 
+
     let queryString = '{"selector": {"docType": "donor"}}';
     return queryByString(stub, queryString);
   }
 
   /************************************************************************************************
-   * 
-   * NGO functions 
-   * 
+   *
+   * NGO functions
+   *
    ************************************************************************************************/
 
   /**
    * Creates a new NGO
-   * 
-   * @param {*} stub 
+   *
+   * @param {*} stub
    * @param {*} args - JSON as follows:
    * {
    *    "ngoRegistrationNumber":"6322",
@@ -928,9 +805,9 @@ console.log('##### queryOwner8')
 
   /**
    * Retrieves a specfic ngo
-   * 
-   * @param {*} stub 
-   * @param {*} args 
+   *
+   * @param {*} stub
+   * @param {*} args
    */
   async queryNGO(stub, args) {
     console.log('============= START : queryNGO ===========');
@@ -946,28 +823,28 @@ console.log('##### queryOwner8')
 
   /**
    * Retrieves all ngos
-   * 
-   * @param {*} stub 
-   * @param {*} args 
+   *
+   * @param {*} stub
+   * @param {*} args
    */
   async queryAllNGOs(stub, args) {
     console.log('============= START : queryAllNGOs ===========');
     console.log('##### queryAllNGOs arguments: ' + JSON.stringify(args));
- 
+
     let queryString = '{"selector": {"docType": "ngo"}}';
     return queryByString(stub, queryString);
   }
 
   /************************************************************************************************
-   * 
-   * Donation functions 
-   * 
+   *
+   * Donation functions
+   *
    ************************************************************************************************/
 
   /**
    * Creates a new Donation
-   * 
-   * @param {*} stub 
+   *
+   * @param {*} stub
    * @param {*} args - JSON as follows:
    * {
    *    "donationId":"2211",
@@ -1014,9 +891,9 @@ console.log('##### queryOwner8')
 
   /**
    * Retrieves a specfic donation
-   * 
-   * @param {*} stub 
-   * @param {*} args 
+   *
+   * @param {*} stub
+   * @param {*} args
    */
   async queryDonation(stub, args) {
     console.log('============= START : queryDonation ===========');
@@ -1031,9 +908,9 @@ console.log('##### queryOwner8')
 
   /**
    * Retrieves donations for a specfic donor
-   * 
-   * @param {*} stub 
-   * @param {*} args 
+   *
+   * @param {*} stub
+   * @param {*} args
    */
   async queryDonationsForDonor(stub, args) {
     console.log('============= START : queryDonationsForDonor ===========');
@@ -1047,9 +924,9 @@ console.log('##### queryOwner8')
 
   /**
    * Retrieves donations for a specfic ngo
-   * 
-   * @param {*} stub 
-   * @param {*} args 
+   *
+   * @param {*} stub
+   * @param {*} args
    */
   async queryDonationsForNGO(stub, args) {
     console.log('============= START : queryDonationsForNGO ===========');
@@ -1063,27 +940,27 @@ console.log('##### queryOwner8')
 
   /**
    * Retrieves all donations
-   * 
-   * @param {*} stub 
-   * @param {*} args 
+   *
+   * @param {*} stub
+   * @param {*} args
    */
   async queryAllDonations(stub, args) {
     console.log('============= START : queryAllDonations ===========');
-    console.log('##### queryAllDonations arguments: ' + JSON.stringify(args)); 
+    console.log('##### queryAllDonations arguments: ' + JSON.stringify(args));
     let queryString = '{"selector": {"docType": "donation"}}';
     return queryByString(stub, queryString);
   }
 
   /************************************************************************************************
-   * 
-   * Spend functions 
-   * 
+   *
+   * Spend functions
+   *
    ************************************************************************************************/
 
   /**
    * Creates a new Spend
-   * 
-   * @param {*} stub 
+   *
+   * @param {*} stub
    * @param {*} args - JSON as follows:
    * {
    *    "ngoRegistrationNumber":"6322",
@@ -1125,9 +1002,9 @@ console.log('##### queryOwner8')
 
   /**
    * Retrieves a specfic spend
-   * 
-   * @param {*} stub 
-   * @param {*} args 
+   *
+   * @param {*} stub
+   * @param {*} args
    */
   async querySpend(stub, args) {
     console.log('============= START : querySpend ===========');
@@ -1142,9 +1019,9 @@ console.log('##### queryOwner8')
 
   /**
    * Retrieves spend for a specfic ngo
-   * 
-   * @param {*} stub 
-   * @param {*} args 
+   *
+   * @param {*} stub
+   * @param {*} args
    */
   async querySpendForNGO(stub, args) {
     console.log('============= START : querySpendForNGO ===========');
@@ -1158,26 +1035,26 @@ console.log('##### queryOwner8')
 
   /**
    * Retrieves all spend
-   * 
-   * @param {*} stub 
-   * @param {*} args 
+   *
+   * @param {*} stub
+   * @param {*} args
    */
   async queryAllSpend(stub, args) {
     console.log('============= START : queryAllSpends ===========');
-    console.log('##### queryAllSpends arguments: ' + JSON.stringify(args)); 
+    console.log('##### queryAllSpends arguments: ' + JSON.stringify(args));
     let queryString = '{"selector": {"docType": "spend"}}';
     return queryByString(stub, queryString);
   }
 
   /************************************************************************************************
-   * 
-   * SpendAllocation functions 
-   * 
+   *
+   * SpendAllocation functions
+   *
    ************************************************************************************************/
 
   /**
    * There is no CREATE SpendAllocation - the allocations are created in the function: allocateSpend
-   * 
+   *
    * SPENDALLOCATION records look as follows:
    *
    * {
@@ -1194,9 +1071,9 @@ console.log('##### queryOwner8')
 
   /**
    * Retrieves a specfic spendAllocation
-   * 
-   * @param {*} stub 
-   * @param {*} args 
+   *
+   * @param {*} stub
+   * @param {*} args
    */
   async querySpendAllocation(stub, args) {
     console.log('============= START : querySpendAllocation ===========');
@@ -1211,9 +1088,9 @@ console.log('##### queryOwner8')
 
   /**
    * Retrieves the spendAllocation records for a specific Donation
-   * 
-   * @param {*} stub 
-   * @param {*} args 
+   *
+   * @param {*} stub
+   * @param {*} args
    */
   async querySpendAllocationForDonation(stub, args) {
     console.log('============= START : querySpendAllocationForDonation ===========');
@@ -1227,9 +1104,9 @@ console.log('##### queryOwner8')
 
   /**
    * Retrieves the spendAllocation records for a specific Spend record
-   * 
-   * @param {*} stub 
-   * @param {*} args 
+   *
+   * @param {*} stub
+   * @param {*} args
    */
   async querySpendAllocationForSpend(stub, args) {
     console.log('============= START : querySpendAllocationForSpend ===========');
@@ -1243,27 +1120,27 @@ console.log('##### queryOwner8')
 
   /**
    * Retrieves all spendAllocations
-   * 
-   * @param {*} stub 
-   * @param {*} args 
+   *
+   * @param {*} stub
+   * @param {*} args
    */
   async queryAllSpendAllocations(stub, args) {
     console.log('============= START : queryAllSpendAllocations ===========');
-    console.log('##### queryAllSpendAllocations arguments: ' + JSON.stringify(args)); 
+    console.log('##### queryAllSpendAllocations arguments: ' + JSON.stringify(args));
     let queryString = '{"selector": {"docType": "spendAllocation"}}';
     return queryByString(stub, queryString);
   }
 
   /************************************************************************************************
-   * 
-   * Ratings functions 
-   * 
+   *
+   * Ratings functions
+   *
    ************************************************************************************************/
 
   /**
    * Creates a new Rating
-   * 
-   * @param {*} stub 
+   *
+   * @param {*} stub
    * @param {*} args - JSON as follows:
    * {
    *    "ngoRegistrationNumber":"6322",
@@ -1294,9 +1171,9 @@ console.log('##### queryOwner8')
 
   /**
    * Retrieves ratings for a specfic ngo
-   * 
-   * @param {*} stub 
-   * @param {*} args 
+   *
+   * @param {*} stub
+   * @param {*} args
    */
   async queryRatingsForNGO(stub, args) {
     console.log('============= START : queryRatingsForNGO ===========');
@@ -1310,9 +1187,9 @@ console.log('##### queryOwner8')
 
   /**
    * Retrieves ratings for an ngo made by a specific donor
-   * 
-   * @param {*} stub 
-   * @param {*} args 
+   *
+   * @param {*} stub
+   * @param {*} args
    */
   async queryDonorRatingsForNGO(stub, args) {
     console.log('============= START : queryDonorRatingsForNGO ===========');
@@ -1326,20 +1203,20 @@ console.log('##### queryOwner8')
   }
 
   /************************************************************************************************
-   * 
-   * Blockchain related functions 
-   * 
+   *
+   * Blockchain related functions
+   *
    ************************************************************************************************/
 
   /**
    * Retrieves the Fabric block and transaction details for a key or an array of keys
-   * 
-   * @param {*} stub 
+   *
+   * @param {*} stub
    * @param {*} args - JSON as follows:
    * [
    *    {"key": "a207aa1e124cc7cb350e9261018a9bd05fb4e0f7dcac5839bdcd0266af7e531d-1"}
    * ]
-   * 
+   *
    */
   async queryHistoryForKey(stub, args) {
     console.log('============= START : queryHistoryForKey ===========');
