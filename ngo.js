@@ -717,6 +717,7 @@ async queryOwners(stub, args) {
     console.log('##### queryOwner1')
 
      let datas = [];
+     let states = [];
      let iterator2 = await stub.getStateByPartialCompositeKey('owner', [json['serialnumber']]);
 
      console.log('##### queryOwner2')
@@ -727,18 +728,18 @@ async queryOwners(stub, args) {
 
 	let data = await iterator2.next();
 	console.log('##### queryOwner4')
-	console.log('##### queryOwner4 data: ' + JSON.parse(data))
+	console.log('##### queryOwner4 data: ' + data)
 	//datas.push(data);
 	console.log('##### queryOwner5')
 	if (data.value) {
 	console.log('##### queryOwner6')
 	  let state = JSON.parse(data.value.value.toString('utf8'))
-	console.log('##### queryOwner6 state: ' + JSON.parse(state))
-	  datas.push(state);
+	console.log('##### queryOwner6 state: ' + state)
+	  states.push(state);
         }
         if (data.done) {
 	console.log('##### queryOwner7')
-	console.log('##### queryOwner7 datas: ' + JSON.parse(datas))
+	console.log('##### queryOwner7 datas: ' + datas)
             await iterator2.close();
             return datas;
         }
@@ -785,7 +786,7 @@ console.log('##### queryOwner8')
     return allResults;
   }
 
-  async queryOwners2(stub, args) {
+  async queryOwners(stub, args) {
     console.log('============= GET : queryOwner ===========');
     console.log('##### queryOwner arguments: ' + JSON.stringify(args));
 
