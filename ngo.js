@@ -502,8 +502,8 @@ let Chaincode = class {
 //    let key = 'product' + json['serialnumber'];
 //    console.log('##### queryProduct key: ' + key);
 
-    // let queryString = '{"selector": {"docType": "product", "serialnumber": "' + json['serialnumber'] + '"}}';
-    let queryString = '{"selector": {"docType": "product' + json['serialnumber'] + '"}}';
+    let queryString = '{"selector": {"docType": "product", "serialnumber": "' + json['serialnumber'] + '"}}';
+    // let queryString = '{"selector": {"docType": "product' + json['serialnumber'] + '"}}';
     return queryByString(stub, queryString);
 //    return queryByKey(stub, key);
   }
