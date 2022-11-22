@@ -616,7 +616,7 @@ let Chaincode = class {
    *    "datetime":"2022-09-05 15:31:56"
    * }
    */
-async createOwner(stub, args) {
+async createOwner2(stub, args) {
     console.log('============= POST : createOwner ===========');
     console.log('##### createOwner arguments: ' + JSON.stringify(args));
 
@@ -661,7 +661,7 @@ console.log('##### createOwner compositeKey: ' + compositeKey);
     console.log('============= END : createOwner ===========');
   }
 
-  async createOwner2(stub, args) {
+  async createOwner(stub, args) {
     console.log('============= POST : createOwner ===========');
     console.log('##### createOwner arguments: ' + JSON.stringify(args));
 
@@ -669,7 +669,7 @@ console.log('##### createOwner compositeKey: ' + compositeKey);
     let json = JSON.parse(args);
     if (json['ownerType'] == '0') {
       let key = 'owner' + json['serialnumber'] + json['ownerType'];
-      json['docType'] = 'owner';
+      json['docType'] = 'owner' + json['serialnumber'];
 
       console.log('##### createOwner payload: ' + JSON.stringify(json));
 
@@ -707,7 +707,7 @@ console.log('##### createOwner compositeKey: ' + compositeKey);
    * @param {*} args 
    */
 
-async queryOwners(stub, args) {
+async queryOwners2(stub, args) {
     console.log('============= GET : queryOwner ===========');
     console.log('##### queryOwner arguments: ' + JSON.stringify(args));
 
@@ -796,7 +796,8 @@ console.log('##### queryOwner8')
 //    console.log('##### queryOwner key: ' + key);
 
 //    return queryByKey(stub, key);
-    let queryString = '{"selector": {"docType": "owner", "serialnumber": "' + json['serialnumber'] + '"}}';
+    //let queryString = '{"selector": {"docType": "owner", "serialnumber": "' + json['serialnumber'] + '"}}';
+    let queryString = '{"selector": {"docType": "owner' + json['serialnumber'] + '"}}';
     return queryByString(stub, queryString);
   }
 
