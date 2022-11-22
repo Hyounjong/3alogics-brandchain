@@ -718,8 +718,8 @@ console.log('##### queryOwner1')
     let res = { done: false, value: null };
     let jsonRes = {};
     res= await stub.getStateByPartialCompositeKey('owner', [json['serialnumber']]);
-console.log('##### queryOwner')
-console.log('##### queryOwner compositeKey: ' + compositeKey);
+console.log('##### queryOwner2')
+console.log('##### queryOwner res: ' + res);
     while (!res.done) {
 console.log('##### queryOwner3')
       jsonRes.Key = res.value.Key;
