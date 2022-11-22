@@ -630,6 +630,7 @@ async createOwner(stub, args) {
       json['docType'] = 'owner';
 
       console.log('##### createOwner payload: ' + JSON.stringify(json));
+console.log('##### createOwner compositeKey: ' + compositeKey);
 
       // Check if the owner already exists
       // let ownerQuery = await stub.getState(key);
@@ -653,6 +654,7 @@ async createOwner(stub, args) {
       json['docType'] = 'owner';
 
       console.log('##### createOwner payload: ' + JSON.stringify(json));
+console.log('##### createOwner compositeKey: ' + compositeKey);
 
       await stub.putState(compositeKey, Buffer.from(JSON.stringify(json)));
     }
@@ -716,7 +718,8 @@ console.log('##### queryOwner1')
     let res = { done: false, value: null };
     let jsonRes = {};
     res= await stub.getStateByPartialCompositeKey('owner', [json['serialnumber']]);
-console.log('##### queryOwner2')
+console.log('##### queryOwner')
+console.log('##### queryOwner compositeKey: ' + compositeKey);
     while (!res.done) {
 console.log('##### queryOwner3')
       jsonRes.Key = res.value.Key;
