@@ -706,7 +706,46 @@ console.log('##### createOwner compositeKey: ' + compositeKey);
    * @param {*} stub 
    * @param {*} args 
    */
-  async queryOwners(stub, args) {
+
+async queryOwners(stub, args) {
+    console.log('============= GET : queryOwner ===========');
+    console.log('##### queryOwner arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+
+    console.log('##### queryOwner1')
+
+     let datas = [];
+     let iterator2 = await stub.getStateByPartialCompositeKey('owner', [json['serialnumber']]);
+
+     console.log('##### queryOwner2')
+
+     while (true) {
+
+	console.log('##### queryOwner3')
+
+	let data = await iterator2.next();
+	console.log('##### queryOwner4')
+	console.log('##### queryOwner4 data: ' + data)
+	datas.push(data);
+	console.log('##### queryOwner5')
+	if (data.value) {
+	console.log('##### queryOwner6')
+	  let state = JSON.parse(data.value.value.toString('utf8'))
+	console.log('##### queryOwner6 state: ' + state)
+	  states.push(state);
+        }
+        if (data.done) {
+	console.log('##### queryOwner7')
+	console.log('##### queryOwner7 datas: ' + datas)
+            await iterator2.close();
+            return datas;
+        }
+     }
+  }
+
+  async queryOwners3(stub, args) {
     console.log('============= GET : queryOwner ===========');
     console.log('##### queryOwner arguments: ' + JSON.stringify(args));
 
