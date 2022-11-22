@@ -710,28 +710,33 @@ async createOwner(stub, args) {
 
     // args is passed as a JSON string
     let json = JSON.parse(args);
+console.log('##### queryOwner1')
 
     let allResults = [];
     let res = { done: false, value: null };
     let jsonRes = {};
     res= await stub.getStateByPartialCompositeKey('owner', [json['serialnumber']]);
-
+console.log('##### queryOwner2')
     while (!res.done) {
       jsonRes.Key = res.value.key;
 
       try {
+console.log('##### queryOwner3')
         jsonRes.Record = JSON.parse(res.value.value.toString('utf8'));
         allResults.push(jsonRes);
         res = await iterator.next();
+console.log('##### queryOwner4')
       }
       catch (err) {
+console.log('##### queryOwner5')
         console.log(err);
         return {}
       }
   
     }
-
+console.log('##### queryOwner6')
     await iterator.close();
+console.log('##### queryOwner7')
     return allResults;
   }
 
