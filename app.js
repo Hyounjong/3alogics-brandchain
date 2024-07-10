@@ -227,13 +227,13 @@ app.get('/providers/:serialnumber', awaitHandler(async (req, res) => {
 	let args = req.params;
 	let fcn = "queryProviders";
 
-    logger.info('##### GET on Provider by username - username : ' + username);
-	logger.info('##### GET on Provider by username - userOrg : ' + orgName);
-	logger.info('##### GET on Provider by username - channelName : ' + channelName);
-	logger.info('##### GET on Provider by username - chaincodeName : ' + chaincodeName);
-	logger.info('##### GET on Provider by username - fcn : ' + fcn);
-	logger.info('##### GET on Provider by username - args : ' + JSON.stringify(args));
-	logger.info('##### GET on Provider by username - peers : ' + peers);
+    logger.info('##### GET on Provider by serialnumber - username : ' + username);
+	logger.info('##### GET on Provider by serialnumber - userOrg : ' + orgName);
+	logger.info('##### GET on Provider by serialnumber - channelName : ' + channelName);
+	logger.info('##### GET on Provider by serialnumber - chaincodeName : ' + chaincodeName);
+	logger.info('##### GET on Provider by serialnumber - fcn : ' + fcn);
+	logger.info('##### GET on Provider by serialnumber - args : ' + JSON.stringify(args));
+	logger.info('##### GET on Provider by serialnumber - peers : ' + peers);
 
     let message = await query.queryChaincode(peers, channelName, chaincodeName, args, fcn, username, orgName);
  	res.send(message);
@@ -286,13 +286,13 @@ app.get('/owners/:serialnumber', awaitHandler(async (req, res) => {
 	let args = req.params;
 	let fcn = "queryOwners";
 
-    logger.info('##### GET on Owner by username - username : ' + username);
-	logger.info('##### GET on Owner by username - userOrg : ' + orgName);
-	logger.info('##### GET on Owner by username - channelName : ' + channelName);
-	logger.info('##### GET on Owner by username - chaincodeName : ' + chaincodeName);
-	logger.info('##### GET on Owner by username - fcn : ' + fcn);
-	logger.info('##### GET on Owner by username - args : ' + JSON.stringify(args));
-	logger.info('##### GET on Owner by username - peers : ' + peers);
+    logger.info('##### GET on Owner by serialnumber - username : ' + username);
+	logger.info('##### GET on Owner by serialnumber - userOrg : ' + orgName);
+	logger.info('##### GET on Owner by serialnumber - channelName : ' + channelName);
+	logger.info('##### GET on Owner by serialnumber - chaincodeName : ' + chaincodeName);
+	logger.info('##### GET on Owner by serialnumber - fcn : ' + fcn);
+	logger.info('##### GET on Owner by serialnumber - args : ' + JSON.stringify(args));
+	logger.info('##### GET on Owner by serialnumber - peers : ' + peers);
 
     let message = await query.queryChaincode(peers, channelName, chaincodeName, args, fcn, username, orgName);
  	res.send(message);
@@ -311,6 +311,65 @@ app.post('/owners', awaitHandler(async (req, res) => {
 	logger.info('##### POST on Owner - fcn : ' + fcn);
 	logger.info('##### POST on Owner - args : ' + JSON.stringify(args));
 	logger.info('##### POST on Owner - peers : ' + peers);
+
+	let message = await invoke.invokeChaincode(peers, channelName, chaincodeName, args, fcn, username, orgName);
+	res.send(message);
+}));
+
+/************************************************************************************
+ * Token methods
+ ************************************************************************************/
+
+// GET Token
+app.get('/tokens', awaitHandler(async (req, res) => {
+	logger.info('================ GET on Token');
+	let args = {};
+	let fcn = "queryAllTokens";
+
+    logger.info('##### GET on Token - username : ' + username);
+	logger.info('##### GET on Token - userOrg : ' + orgName);
+	logger.info('##### GET on Token - channelName : ' + channelName);
+	logger.info('##### GET on Token - chaincodeName : ' + chaincodeName);
+	logger.info('##### GET on Token - fcn : ' + fcn);
+	logger.info('##### GET on Token - args : ' + JSON.stringify(args));
+	logger.info('##### GET on Token - peers : ' + peers);
+
+    let message = await query.queryChaincode(peers, channelName, chaincodeName, args, fcn, username, orgName);
+ 	res.send(message);
+}));
+
+// GET a specific Token
+app.get('/tokens/:token', awaitHandler(async (req, res) => {
+	logger.info('================ GET on Token by ID');
+	logger.info('Token username : ' + req.params);
+	let args = req.params;
+	let fcn = "queryTokens";
+
+    logger.info('##### GET on Token by username - username : ' + username);
+	logger.info('##### GET on Token by username - userOrg : ' + orgName);
+	logger.info('##### GET on Token by username - channelName : ' + channelName);
+	logger.info('##### GET on Token by username - chaincodeName : ' + chaincodeName);
+	logger.info('##### GET on Token by username - fcn : ' + fcn);
+	logger.info('##### GET on Token by username - args : ' + JSON.stringify(args));
+	logger.info('##### GET on Token by username - peers : ' + peers);
+
+    let message = await query.queryChaincode(peers, channelName, chaincodeName, args, fcn, username, orgName);
+ 	res.send(message);
+}));
+
+// POST Token
+app.post('/tokens', awaitHandler(async (req, res) => {
+	logger.info('================ POST on Token');
+	var args = req.body;
+	var fcn = "createToken";
+
+    logger.info('##### POST on Token - username : ' + username);
+	logger.info('##### POST on Token - userOrg : ' + orgName);
+	logger.info('##### POST on Token - channelName : ' + channelName);
+	logger.info('##### POST on Token - chaincodeName : ' + chaincodeName);
+	logger.info('##### POST on Token - fcn : ' + fcn);
+	logger.info('##### POST on Token - args : ' + JSON.stringify(args));
+	logger.info('##### POST on Token - peers : ' + peers);
 
 	let message = await invoke.invokeChaincode(peers, channelName, chaincodeName, args, fcn, username, orgName);
 	res.send(message);

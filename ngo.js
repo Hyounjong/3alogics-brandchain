@@ -694,6 +694,99 @@ let Chaincode = class {
 
   /************************************************************************************************
    *
+   * Token functions
+   *
+   ************************************************************************************************/
+
+   /**
+   * Creates a new token
+   *
+   * @param {*} stub
+   * @param {*} args - JSON as follows:
+   * {
+   *    "token": "1234567890",
+   *    "tokenType": "1",
+   *    "fImgUrl": "false",
+   *    "bImgUrl": "james@gmail.com",
+   *    "useYn": "+82"
+   * }
+   */
+  async createToken(stub, args) {
+    console.log('============= POST : createToken ===========');
+    console.log('##### createToken arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+    if (json['tokenType'] == '0') {
+      let key = 'token' + json['token'] + json['tokenType'];
+      json['docType'] = 'token';
+
+      console.log('##### createToken payload: ' + JSON.stringify(json));
+
+      // Check if the token already exists
+      let tokenQuery = await stub.getState(key);
+      if (tokenQuery.toString()) {
+        throw new Error('##### createToken - This tokenType 0 already exists: ' + json['token']);
+      }
+
+      await stub.putState(key, Buffer.from(JSON.stringify(json)));
+    } else {
+      let pKey = 'token' + json['token'] + '0';
+
+      // Check if the token already exists
+      let tokenQuery = await stub.getState(pKey);
+      if (tokenQuery.toString()) {
+      } else {
+//	throw new Error('##### createToken - This tokenType 0 does not exist: ' + json['token']);
+      }
+
+      let key = 'token' + json['token'] + '1' + json['datetime'] + json['mobile'];
+      json['docType'] = 'token';
+
+      console.log('##### createToken payload: ' + JSON.stringify(json));
+
+      await stub.putState(key, Buffer.from(JSON.stringify(json)));
+    }
+    console.log('============= END : createToken ===========');
+  }
+
+  /**
+   * Retrieves a specfic token
+   *
+   * @param {*} stub
+   * @param {*} args
+   */
+  async queryTokens(stub, args) {
+    console.log('============= GET : queryTokens ===========');
+    console.log('##### queryTokens arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+//    let key = 'token' + json['token'];
+//    console.log('##### queryTtokenoken key: ' + key);
+
+//    return queryByKey(stub, key);
+    // let queryString = '{"selector": {"docType": "token", "token": "' + json['token'] + '"}}';
+    let queryString = '{"selector": {"docType": "token' + json['token'] + '"}}';
+    return queryByString(stub, queryString);
+  }
+
+  /**
+   * Retrieves all tokens
+   *
+   * @param {*} stub
+   * @param {*} args
+   */
+  async queryAllTokens(stub, args) {
+    console.log('============= GET : queryAllTokens ===========');
+    console.log('##### queryAllTokens arguments: ' + JSON.stringify(args));
+
+    let queryString = '{"selector": {"docType": "token"}}';
+    return queryByString(stub, queryString);
+  }
+
+  /************************************************************************************************
+   *
    * Donor functions
    *
    ************************************************************************************************/
