@@ -105,6 +105,8 @@ async function queryByString(stub, queryString) {
         allResults.push(jsonRes);
         continue;
       }
+      let cnt = 0;
+      let firstResults = [];
       for (var key in jsonRecord) {
         if (jsonRecord.hasOwnProperty(key)) {
           console.log('##### queryByString jsonRecord key: ' + key + " value: " + jsonRecord[key]);
@@ -116,7 +118,15 @@ async function queryByString(stub, queryString) {
             // we do not want this record as it does not match the filter criteria
             continue;
           }
-          allResults.push(jsonRes);
+          if (cnt == 0) {
+            firstResults.push.push(jsonRes);
+          } else {
+            for (let firstResult in firstResults) {
+              if (firstResult.Record[key] && firstResult.Record[key] == jsonRecord[key]) {
+                allResults.push(firstResult);
+              }
+            }
+          }
         }
       }
       // ******************* End LevelDB filter handling ******************************************
@@ -813,19 +823,19 @@ let Chaincode = class {
 
   /************************************************************************************************
    *
-   * Token functions
+   * Coin functions
    *
    ************************************************************************************************/
 
    /**
-   * Creates a new token
+   * Creates a new coin
    *
    * @param {*} stub
    * @param {*} args - JSON as follows:
    * {
-   *    "token": "1234567890",
-   *    "tokenType": "como",
-   *    "tokenNetwork": "polygon",
+   *    "coin": "1234567890",
+   *    "coinType": "como",
+   *    "coinNetwork": "polygon",
    *    "voteYn": "true",
    *    "userId": "12233434",
    *    "userNm": "lsh",
@@ -835,100 +845,100 @@ let Chaincode = class {
    *    "voteNum": "2"
    * }
    */
-   async createToken(stub, args) {
-     console.log('============= POST : createToken ===========');
-     console.log('##### createToken arguments: ' + JSON.stringify(args));
+   async createCoin(stub, args) {
+     console.log('============= POST : createCoin ===========');
+     console.log('##### createCoin arguments: ' + JSON.stringify(args));
 
      // args is passed as a JSON string
      let json = JSON.parse(args);
-     let key = 'token' + json['token'];
-     json['docType'] = 'token';
+     let key = 'coin' + json['coin'];
+     json['docType'] = 'coin';
 
-     console.log('##### createToken payload: ' + JSON.stringify(json));
+     console.log('##### createCoin payload: ' + JSON.stringify(json));
 
-     // Check if the token already exists
-     let tokenQuery = await stub.getState(key);
-     if (tokenQuery.toString()) {
-       throw new Error('##### createToken - This token already exists: ' + json['token']);
+     // Check if the coin already exists
+     let coinQuery = await stub.getState(key);
+     if (coinQuery.toString()) {
+       throw new Error('##### createCoin - This coin already exists: ' + json['coin']);
      }
 
      await stub.putState(key, Buffer.from(JSON.stringify(json)));
-     console.log('============= END : createToken ===========');
+     console.log('============= END : createCoin ===========');
    }
 
   /**
-   * Retrieves a specfic token
+   * Retrieves a specfic coin
    *
    * @param {*} stub
    * @param {*} args
    */
-  async queryTokenByToken(stub, args) {
-    console.log('============= GET : queryTokenByToken ===========');
-    console.log('##### queryTokenByToken arguments: ' + JSON.stringify(args));
+  async queryCoinByCoin(stub, args) {
+    console.log('============= GET : queryCoinByCoin ===========');
+    console.log('##### queryCoinByCoin arguments: ' + JSON.stringify(args));
 
     // args is passed as a JSON string
     let json = JSON.parse(args);
-//    let key = 'token' + json['token'];
-//    console.log('##### queryToken key: ' + key);
+//    let key = 'coin' + json['coin'];
+//    console.log('##### queryCoin key: ' + key);
 
 //    return queryByKey(stub, key);
-    let queryString = '{"selector": {"docType": "token", "token": "' + json['token'] + '"}}';
+    let queryString = '{"selector": {"docType": "coin", "coin": "' + json['coin'] + '"}}';
     return queryByString(stub, queryString);
   }
 
-  async queryTokenByUserId(stub, args) {
-    console.log('============= GET : queryTokenByUserId ===========');
-    console.log('##### queryTokenByUserId arguments: ' + JSON.stringify(args));
+  async queryCoinByUserId(stub, args) {
+    console.log('============= GET : queryCoinByUserId ===========');
+    console.log('##### queryCoinByUserId arguments: ' + JSON.stringify(args));
 
     // args is passed as a JSON string
     let json = JSON.parse(args);
-//    let key = 'token' + json['token'];
-//    console.log('##### queryTokenByKey key: ' + key);
+//    let key = 'coin' + json['coin'];
+//    console.log('##### queryCoinByKey key: ' + key);
 
 //    return queryByKey(stub, key);
-    let queryString = '{"selector": {"docType": "token", "userId": "' + json['userId'] + '"}}';
+    let queryString = '{"selector": {"docType": "coin", "userId": "' + json['userId'] + '"}}';
     return queryByString(stub, queryString);
   }
 
-  async queryTokenByVoteYn(stub, args) {
-    console.log('============= GET : queryTokenByVoteYn ===========');
-    console.log('##### queryTokenByVoteYn arguments: ' + JSON.stringify(args));
+  async queryCoinByVoteYn(stub, args) {
+    console.log('============= GET : queryCoinByVoteYn ===========');
+    console.log('##### queryCoinByVoteYn arguments: ' + JSON.stringify(args));
 
     // args is passed as a JSON string
     let json = JSON.parse(args);
-//    let key = 'token' + json['token'];
-//    console.log('##### queryTokenByKey key: ' + key);
+//    let key = 'coin' + json['coin'];
+//    console.log('##### queryCoinByKey key: ' + key);
 
 //    return queryByKey(stub, key);
-    let queryString = '{"selector": {"docType": "token", "voteYn": "' + json['voteYn'] + '"}}';
+    let queryString = '{"selector": {"docType": "coin", "voteYn": "' + json['voteYn'] + '"}}';
     return queryByString(stub, queryString);
   }
 
-  async queryTokenByMulti(stub, args) {
-    console.log('============= GET : queryTokenByMulti ===========');
-    console.log('##### queryTokenByMulti arguments: ' + JSON.stringify(args));
+  async queryCoinByMulti(stub, args) {
+    console.log('============= GET : queryCoinByMulti ===========');
+    console.log('##### queryCoinByMulti arguments: ' + JSON.stringify(args));
 
     // args is passed as a JSON string
     let json = JSON.parse(args);
-//    let key = 'token' + json['token'];
-//    console.log('##### queryTokenByKey key: ' + key);
+//    let key = 'coin' + json['coin'];
+//    console.log('##### queryCoinByKey key: ' + key);
 
 //    return queryByKey(stub, key);
-    let queryString = '{"selector": {"docType": "token", "userId": "' + json['userId'] + '", "voteYn": "' + json['voteYn'] + '"}}';
+    let queryString = '{"selector": {"docType": "coin", "userId": "' + json['userId'] + '", "voteYn": "' + json['voteYn'] + '"}}';
     return queryByString(stub, queryString);
   }
 
   /**
-   * Retrieves all tokens
+   * Retrieves all coins
    *
    * @param {*} stub
    * @param {*} args
    */
-  async queryAllTokens(stub, args) {
-    console.log('============= GET : queryAllTokens ===========');
-    console.log('##### queryAllTokens arguments: ' + JSON.stringify(args));
+  async queryAllCoins(stub, args) {
+    console.log('============= GET : queryAllCoins ===========');
+    console.log('##### queryAllCoins arguments: ' + JSON.stringify(args));
 
-    let queryString = '{"selector": {"docType": "token"}}';
+    let queryString = '{"selector": {"docType": "coin"}}';
     return queryByString(stub, queryString);
   }
 
