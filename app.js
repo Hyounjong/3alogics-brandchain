@@ -15,16 +15,16 @@
 */
 
 'use strict';
-var log4js = require('log4js');
-log4js.configure({
-	appenders: {
-	  out: { type: 'stdout' },
-	},
-	categories: {
-	  default: { appenders: ['out'], level: 'info' },
-	}
-});
-var logger = log4js.getLogger('NGOAPI');
+// var log4js = require('log4js');
+// log4js.configure({
+// 	appenders: {
+// 	  out: { type: 'stdout' },
+// 	},
+// 	categories: {
+// 	  default: { appenders: ['out'], level: 'info' },
+// 	}
+// });
+// var logger = log4js.getLogger('NGOAPI');
 const WebSocketServer = require('ws');
 var express = require('express');
 var bodyParser = require('body-parser');
