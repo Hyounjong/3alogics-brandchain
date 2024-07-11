@@ -357,7 +357,7 @@ app.get('/nft/:nft', awaitHandler(async (req, res) => {
  	res.send(message);
 }));
 
-app.get('/nft/:userId', awaitHandler(async (req, res) => {
+app.get('/nft/userid/:userId', awaitHandler(async (req, res) => {
 	logger.info('================ GET on NFT by userId');
 	logger.info('NFT userId : ' + req.params);
 	let args = req.params;
@@ -375,7 +375,7 @@ app.get('/nft/:userId', awaitHandler(async (req, res) => {
  	res.send(message);
 }));
 
-app.get('/nft/:useYn', awaitHandler(async (req, res) => {
+app.get('/nft/useyn/:useYn', awaitHandler(async (req, res) => {
 	logger.info('================ GET on NFT by useYn');
 	logger.info('NFT useYn : ' + req.params);
 	let args = req.params;
@@ -393,7 +393,7 @@ app.get('/nft/:useYn', awaitHandler(async (req, res) => {
  	res.send(message);
 }));
 
-app.get('/nft/:userId/:useYn', awaitHandler(async (req, res) => {
+app.get('/nft/userid/:userId/useyn/:useYn', awaitHandler(async (req, res) => {
 	logger.info('================ GET on NFT by Multi');
 	logger.info('NFT Multi : ' + req.params);
 	let args = req.params;
@@ -470,7 +470,7 @@ app.get('/token/:token', awaitHandler(async (req, res) => {
  	res.send(message);
 }));
 
-app.get('/token/:userId', awaitHandler(async (req, res) => {
+app.get('/token/userid/:userId', awaitHandler(async (req, res) => {
 	logger.info('================ GET on Token by userId');
 	logger.info('Token userId : ' + req.params);
 	let args = req.params;
@@ -488,7 +488,7 @@ app.get('/token/:userId', awaitHandler(async (req, res) => {
  	res.send(message);
 }));
 
-app.get('/token/:voteYn', awaitHandler(async (req, res) => {
+app.get('/token/voteyn/:voteYn', awaitHandler(async (req, res) => {
 	logger.info('================ GET on Token by voteYn');
 	logger.info('Token voteYn : ' + req.params);
 	let args = req.params;
@@ -506,7 +506,7 @@ app.get('/token/:voteYn', awaitHandler(async (req, res) => {
  	res.send(message);
 }));
 
-app.get('/token/:userId/:voteYn', awaitHandler(async (req, res) => {
+app.get('/token/userid/:userId/voteyn/:voteYn', awaitHandler(async (req, res) => {
 	logger.info('================ GET on Token by Multi');
 	logger.info('Token Multi : ' + req.params);
 	let args = req.params;
