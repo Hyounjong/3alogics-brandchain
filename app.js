@@ -375,6 +375,42 @@ app.get('/nft/:userId', awaitHandler(async (req, res) => {
  	res.send(message);
 }));
 
+app.get('/nft/:useYn', awaitHandler(async (req, res) => {
+	logger.info('================ GET on NFT by useYn');
+	logger.info('NFT useYn : ' + req.params);
+	let args = req.params;
+	let fcn = "queryNFTByUseYn";
+
+  logger.info('##### GET on NFT by username - username : ' + username);
+	logger.info('##### GET on NFT by username - userOrg : ' + orgName);
+	logger.info('##### GET on NFT by username - channelName : ' + channelName);
+	logger.info('##### GET on NFT by username - chaincodeName : ' + chaincodeName);
+	logger.info('##### GET on NFT by username - fcn : ' + fcn);
+	logger.info('##### GET on NFT by username - args : ' + JSON.stringify(args));
+	logger.info('##### GET on NFT by username - peers : ' + peers);
+
+    let message = await query.queryChaincode(peers, channelName, chaincodeName, args, fcn, username, orgName);
+ 	res.send(message);
+}));
+
+app.get('/nft/:userId/:useYn', awaitHandler(async (req, res) => {
+	logger.info('================ GET on NFT by Multi');
+	logger.info('NFT Multi : ' + req.params);
+	let args = req.params;
+	let fcn = "queryNFTByMulti";
+
+  logger.info('##### GET on NFT by username - username : ' + username);
+	logger.info('##### GET on NFT by username - userOrg : ' + orgName);
+	logger.info('##### GET on NFT by username - channelName : ' + channelName);
+	logger.info('##### GET on NFT by username - chaincodeName : ' + chaincodeName);
+	logger.info('##### GET on NFT by username - fcn : ' + fcn);
+	logger.info('##### GET on NFT by username - args : ' + JSON.stringify(args));
+	logger.info('##### GET on NFT by username - peers : ' + peers);
+
+    let message = await query.queryChaincode(peers, channelName, chaincodeName, args, fcn, username, orgName);
+ 	res.send(message);
+}));
+
 // POST NFT
 app.post('/nft', awaitHandler(async (req, res) => {
 	logger.info('================ POST on NFT');
@@ -457,6 +493,24 @@ app.get('/token/:voteYn', awaitHandler(async (req, res) => {
 	logger.info('Token voteYn : ' + req.params);
 	let args = req.params;
 	let fcn = "queryTokenByVoteYn";
+
+  logger.info('##### GET on Token by username - username : ' + username);
+	logger.info('##### GET on Token by username - userOrg : ' + orgName);
+	logger.info('##### GET on Token by username - channelName : ' + channelName);
+	logger.info('##### GET on Token by username - chaincodeName : ' + chaincodeName);
+	logger.info('##### GET on Token by username - fcn : ' + fcn);
+	logger.info('##### GET on Token by username - args : ' + JSON.stringify(args));
+	logger.info('##### GET on Token by username - peers : ' + peers);
+
+    let message = await query.queryChaincode(peers, channelName, chaincodeName, args, fcn, username, orgName);
+ 	res.send(message);
+}));
+
+app.get('/token/:userId/:voteYn', awaitHandler(async (req, res) => {
+	logger.info('================ GET on Token by Multi');
+	logger.info('Token Multi : ' + req.params);
+	let args = req.params;
+	let fcn = "queryTokenByMulti";
 
   logger.info('##### GET on Token by username - username : ' + username);
 	logger.info('##### GET on Token by username - userOrg : ' + orgName);

@@ -769,6 +769,34 @@ let Chaincode = class {
     return queryByString(stub, queryString);
   }
 
+  async queryNFTByUseYn(stub, args) {
+    console.log('============= GET : queryNFTByUseYn ===========');
+    console.log('##### queryNFTByUseYn arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+//    let key = 'nft' + json['nft'];
+//    console.log('##### queryNFT key: ' + key);
+
+//    return queryByKey(stub, key);
+    let queryString = '{"selector": {"docType": "nft", "useYn": "' + json['useYn'] + '"}}';
+    return queryByString(stub, queryString);
+  }
+
+  async queryNFTByMulti(stub, args) {
+    console.log('============= GET : queryNFTByMulti ===========');
+    console.log('##### queryNFTByMulti arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+//    let key = 'nft' + json['nft'];
+//    console.log('##### queryNFT key: ' + key);
+
+//    return queryByKey(stub, key);
+    let queryString = '{"selector": {"docType": "nft", "userId": "' + json['userId'] + '", "useYn": "' + json['useYn'] + '"}}';
+    return queryByString(stub, queryString);
+  }
+
   /**
    * Retrieves all nfts
    *
@@ -873,6 +901,20 @@ let Chaincode = class {
 
 //    return queryByKey(stub, key);
     let queryString = '{"selector": {"docType": "token", "voteYn": "' + json['voteYn'] + '"}}';
+    return queryByString(stub, queryString);
+  }
+
+  async queryTokenByMulti(stub, args) {
+    console.log('============= GET : queryTokenByMulti ===========');
+    console.log('##### queryTokenByMulti arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+//    let key = 'token' + json['token'];
+//    console.log('##### queryTokenByKey key: ' + key);
+
+//    return queryByKey(stub, key);
+    let queryString = '{"selector": {"docType": "token", "userId": "' + json['userId'] + '", "voteYn": "' + json['voteYn'] + '"}}';
     return queryByString(stub, queryString);
   }
 
