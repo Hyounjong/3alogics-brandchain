@@ -119,7 +119,7 @@ async function queryByString(stub, queryString) {
             continue;
           }
           if (cnt == 0) {
-            firstResults.push.push(jsonRes);
+            firstResults.push(jsonRes);
           } else {
             for (let firstResult in firstResults) {
               if (firstResult.Record[key] && firstResult.Record[key] == jsonRecord[key]) {
