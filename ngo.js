@@ -717,7 +717,7 @@ let Chaincode = class {
 
      // args is passed as a JSON string
      let json = JSON.parse(args);
-     let key = 'Token' + json['token'];
+     let key = 'token' + json['token'];
      json['docType'] = 'token';
 
      console.log('##### createToken payload: ' + JSON.stringify(json));
@@ -748,8 +748,8 @@ let Chaincode = class {
 //    console.log('##### queryTtokenoken key: ' + key);
 
 //    return queryByKey(stub, key);
-    let queryString = '{"selector": {"docType": "token", "token": "' + json['token'] + '"}}';
-    // let queryString = '{"selector": {"docType": "token' + json['token'] + '"}}';
+    // let queryString = '{"selector": {"docType": "token", "token": "' + json['token'] + '"}}';
+    let queryString = '{"selector": {"docType": "token' + json['token'] + '"}}';
     return queryByString(stub, queryString);
   }
 
