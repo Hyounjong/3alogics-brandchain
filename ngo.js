@@ -51,8 +51,8 @@ async function queryByKey(stub, key) {
  * @param {*} queryString - the query string to execute
  */
 async function queryByString(stub, queryString) {
-  console.log('============= START : queryByString ===========');
-  console.log("##### queryByString queryString: " + queryString);
+  logger.info('============= START : queryByString ===========');
+  logger.info("##### queryByString queryString: " + queryString);
 
   // CouchDB Query
   // let iterator = await stub.getQueryResult(queryString);
@@ -84,14 +84,14 @@ async function queryByString(stub, queryString) {
 
     if (res.value && res.value.value.toString()) {
       let jsonRes = {};
-      console.log('##### queryByString iterator: ' + res.value.value.toString('utf8'));
+      logger.info('##### queryByString iterator: ' + res.value.value.toString('utf8'));
 
       jsonRes.Key = res.value.key;
       try {
         jsonRes.Record = JSON.parse(res.value.value.toString('utf8'));
       }
       catch (err) {
-        console.log('##### queryByString error: ' + err);
+        logger.info('##### queryByString error: ' + err);
         jsonRes.Record = res.value.value.toString('utf8');
       }
       // ******************* LevelDB filter handling ******************************************
@@ -100,18 +100,18 @@ async function queryByString(stub, queryString) {
       // If we are using CouchDB, this isn't required as rich query supports selectors
       let jsonRecord = jsonQueryString['selector'];
       // If there is only a docType, no need to filter, just return all
-      console.log('##### queryByString jsonRecord - number of JSON keys: ' + Object.keys(jsonRecord).length);
+      logger.info('##### queryByString jsonRecord - number of JSON keys: ' + Object.keys(jsonRecord).length);
       if (Object.keys(jsonRecord).length == 1) {
         allResults.push(jsonRes);
         continue;
       }
       for (var key in jsonRecord) {
         if (jsonRecord.hasOwnProperty(key)) {
-          console.log('##### queryByString jsonRecord key: ' + key + " value: " + jsonRecord[key]);
+          logger.info('##### queryByString jsonRecord key: ' + key + " value: " + jsonRecord[key]);
           if (key == "docType") {
             continue;
           }
-          console.log('##### queryByString json iterator has key: ' + jsonRes.Record[key]);
+          logger.info('##### queryByString json iterator has key: ' + jsonRes.Record[key]);
           if (!(jsonRes.Record[key] && jsonRes.Record[key] == jsonRecord[key])) {
             // we do not want this record as it does not match the filter criteria
             continue;
@@ -125,8 +125,8 @@ async function queryByString(stub, queryString) {
     }
     if (res.done) {
       await iterator.close();
-      console.log('##### queryByString all results: ' + JSON.stringify(allResults));
-      console.log('============= END : queryByString ===========');
+      logger.info('##### queryByString all results: ' + JSON.stringify(allResults));
+      logger.info('============= END : queryByString ===========');
       return Buffer.from(JSON.stringify(allResults));
     }
   }
