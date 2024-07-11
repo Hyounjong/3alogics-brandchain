@@ -694,6 +694,97 @@ let Chaincode = class {
 
   /************************************************************************************************
    *
+   * NFT functions
+   *
+   ************************************************************************************************/
+
+   /**
+   * Creates a new nft
+   *
+   * @param {*} stub
+   * @param {*} args - JSON as follows:
+   * {
+   *    "nft": "abcdefghijk",
+   *    "nftNetwork": "polygon",
+   *    "fImgUrl": "https://dev.3alogics.com/frontImg/abcde",
+   *    "bImgUrl": "https://dev.3alogics.com/backImg/abcde",
+   *    "useYn": "true",
+   *    "userId": "12233434",
+   *    "userNm": "lsh",
+   *    "userAddr": "0x83493249"
+   * }
+   */
+   async createNFT(stub, args) {
+     console.log('============= POST : createNFT ===========');
+     console.log('##### createNFT arguments: ' + JSON.stringify(args));
+
+     // args is passed as a JSON string
+     let json = JSON.parse(args);
+     let key = 'nft' + json['nft'];
+     json['docType'] = 'nft';
+
+     console.log('##### createNFT payload: ' + JSON.stringify(json));
+
+     // Check if the nft already exists
+ //    let nftQuery = await stub.getState(key);
+ //    if (nftQuery.toString()) {
+ //      throw new Error('##### createNFT - This nft already exists: ' + json['serialnumber']);
+ //    }
+
+     await stub.putState(key, Buffer.from(JSON.stringify(json)));
+     console.log('============= END : createNFT ===========');
+   }
+
+  /**
+   * Retrieves a specfic nft
+   *
+   * @param {*} stub
+   * @param {*} args
+   */
+  async queryNFTByNft(stub, args) {
+    console.log('============= GET : queryNFTByNft ===========');
+    console.log('##### queryNFTByNft arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+//    let key = 'nft' + json['nft'];
+//    console.log('##### queryNFT key: ' + key);
+
+//    return queryByKey(stub, key);
+    let queryString = '{"selector": {"docType": "nft", "nft": "' + json['nft'] + '"}}';
+    return queryByString(stub, queryString);
+  }
+
+  async queryNFTByUserId(stub, args) {
+    console.log('============= GET : queryNFTByUserId ===========');
+    console.log('##### queryNFTByUserId arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+//    let key = 'nft' + json['nft'];
+//    console.log('##### queryNFT key: ' + key);
+
+//    return queryByKey(stub, key);
+    let queryString = '{"selector": {"docType": "nft", "userId": "' + json['userId'] + '"}}';
+    return queryByString(stub, queryString);
+  }
+
+  /**
+   * Retrieves all nfts
+   *
+   * @param {*} stub
+   * @param {*} args
+   */
+  async queryAllNFTs(stub, args) {
+    console.log('============= GET : queryAllNFTs ===========');
+    console.log('##### queryAllNFTs arguments: ' + JSON.stringify(args));
+
+    let queryString = '{"selector": {"docType": "nft"}}';
+    return queryByString(stub, queryString);
+  }
+
+  /************************************************************************************************
+   *
    * Token functions
    *
    ************************************************************************************************/
@@ -705,10 +796,15 @@ let Chaincode = class {
    * @param {*} args - JSON as follows:
    * {
    *    "token": "1234567890",
-   *    "tokenType": "1",
-   *    "fImgUrl": "https://dev.3alogics.com/frontImg/abcde",
-   *    "bImgUrl": "https://dev.3alogics.com/backImg/abcde",
-   *    "useYn": "false"
+   *    "tokenType": "como",
+   *    "tokenNetwork": "polygon",
+   *    "voteYn": "true",
+   *    "userId": "12233434",
+   *    "userNm": "lsh",
+   *    "userAddr": "0x83493249",
+   *    "voteId": "vote1234",
+   *    "voteNm": "leader vote",
+   *    "voteNum": "2"
    * }
    */
    async createToken(stub, args) {
@@ -738,18 +834,45 @@ let Chaincode = class {
    * @param {*} stub
    * @param {*} args
    */
-  async queryTokens(stub, args) {
-    console.log('============= GET : queryTokens ===========');
-    console.log('##### queryTokens arguments: ' + JSON.stringify(args));
+  async queryTokenByToken(stub, args) {
+    console.log('============= GET : queryTokenByToken ===========');
+    console.log('##### queryTokenByToken arguments: ' + JSON.stringify(args));
 
     // args is passed as a JSON string
     let json = JSON.parse(args);
 //    let key = 'token' + json['token'];
-//    console.log('##### queryTtokenoken key: ' + key);
+//    console.log('##### queryToken key: ' + key);
 
 //    return queryByKey(stub, key);
     let queryString = '{"selector": {"docType": "token", "token": "' + json['token'] + '"}}';
-    // let queryString = '{"selector": {"docType": "token' + json['token'] + '"}}';
+    return queryByString(stub, queryString);
+  }
+
+  async queryTokenByUserId(stub, args) {
+    console.log('============= GET : queryTokenByUserId ===========');
+    console.log('##### queryTokenByUserId arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+//    let key = 'token' + json['token'];
+//    console.log('##### queryTokenByKey key: ' + key);
+
+//    return queryByKey(stub, key);
+    let queryString = '{"selector": {"docType": "token", "userId": "' + json['userId'] + '"}}';
+    return queryByString(stub, queryString);
+  }
+
+  async queryTokenByVoteYn(stub, args) {
+    console.log('============= GET : queryTokenByVoteYn ===========');
+    console.log('##### queryTokenByVoteYn arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+//    let key = 'token' + json['token'];
+//    console.log('##### queryTokenByKey key: ' + key);
+
+//    return queryByKey(stub, key);
+    let queryString = '{"selector": {"docType": "token", "voteYn": "' + json['voteYn'] + '"}}';
     return queryByString(stub, queryString);
   }
 
