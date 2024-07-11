@@ -847,10 +847,10 @@ let Chaincode = class {
      console.log('##### createToken payload: ' + JSON.stringify(json));
 
      // Check if the token already exists
- //    let tokenQuery = await stub.getState(key);
- //    if (tokenQuery.toString()) {
- //      throw new Error('##### createToken - This token already exists: ' + json['serialnumber']);
- //    }
+     let tokenQuery = await stub.getState(key);
+     if (tokenQuery.toString()) {
+       throw new Error('##### createToken - This token already exists: ' + json['token']);
+     }
 
      await stub.putState(key, Buffer.from(JSON.stringify(json)));
      console.log('============= END : createToken ===========');
