@@ -748,8 +748,8 @@ let Chaincode = class {
 //    console.log('##### queryTtokenoken key: ' + key);
 
 //    return queryByKey(stub, key);
-    // let queryString = '{"selector": {"docType": "token", "token": "' + json['token'] + '"}}';
-    let queryString = '{"selector": {"docType": "token' + json['token'] + '"}}';
+    let queryString = '{"selector": {"docType": "token", "token": "' + json['token'] + '"}}';
+    // let queryString = '{"selector": {"docType": "token' + json['token'] + '"}}';
     return queryByString(stub, queryString);
   }
 
