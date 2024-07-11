@@ -15,6 +15,16 @@
 */
 
 'use strict';
+var log4js = require('log4js');
+log4js.configure({
+	appenders: {
+	  out: { type: 'stdout' },
+	},
+	categories: {
+	  default: { appenders: ['out'], level: 'info' },
+	}
+});
+var logger = log4js.getLogger('NGOAPI');
 const shim = require('fabric-shim');
 const util = require('util');
 
