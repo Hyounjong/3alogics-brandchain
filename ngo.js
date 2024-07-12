@@ -847,10 +847,10 @@ let Chaincode = class {
      console.log('##### createCoin payload: ' + JSON.stringify(json));
 
      // Check if the coin already exists
-     let coinQuery = await stub.getState(key);
-     if (coinQuery.toString()) {
-       throw new Error('##### createCoin - This coin already exists: ' + json['coin']);
-     }
+     // let coinQuery = await stub.getState(key);
+     // if (coinQuery.toString()) {
+     //   throw new Error('##### createCoin - This coin already exists: ' + json['coin']);
+     // }
 
      await stub.putState(key, Buffer.from(JSON.stringify(json)));
      console.log('============= END : createCoin ===========');
