@@ -78,8 +78,6 @@ async function queryByString(stub, queryString) {
 
   // Iterator handling is identical for both CouchDB and LevelDB result sets, with the
   // exception of the filter handling in the commented section below
-  let cnt = 0;
-  let firstResults = [];
   let allResults = [];
   while (true) {
     let res = await iterator.next();
@@ -118,15 +116,7 @@ async function queryByString(stub, queryString) {
             // we do not want this record as it does not match the filter criteria
             continue;
           }
-          if (cnt == 0) {
-            firstResults.push(jsonRes);
-          } else {
-            for (let firstResult in firstResults) {
-              if (firstResult.Record[key] && firstResult.Record[key] == jsonRecord[key]) {
-                allResults.push(firstResult);
-              }
-            }
-          }
+          allResults.push(jsonRes);
         }
       }
       // ******************* End LevelDB filter handling ******************************************
